@@ -84,7 +84,7 @@
 
                         @if (auth()->check())
                             <li class="nav-item">
-                                <a class="btn btn-primary" href="/myprofile">{{ auth()->user()->name }}</a>
+                                <a class="btn btn-primary" href="/dashboard">{{ auth()->user()->name }}</a>
                             </li>
                         @else
                             <li class="nav-item">
