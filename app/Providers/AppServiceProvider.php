@@ -17,5 +17,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Daftarkan alias 'siswa' untuk middleware
         Route::aliasMiddleware('siswa', SiswaMiddleware::class);
+        
+
+
+
     }
 }

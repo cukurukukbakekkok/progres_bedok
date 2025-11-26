@@ -1,15 +1,49 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard Admin - PPDB SMK ANTARTIKA 1 SDA</title>
+    <title>Dashboard PPDB</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
-        body { background: #f8f9fa; }
-        .card { border-radius: 12px; box-shadow: 0 8px 20px rgb(0 0 0 / 0.1); }
-        .logout-btn, .btn-action { transition: transform 0.2s ease; }
-        .logout-btn:hover, .btn-action:hover { transform: scale(1.05); }
+        body { background: #eef2f7; }
+        .navbar { border-bottom: 4px solid rgba(255,255,255,.25); }
+
+        .card {
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+            transition: 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+        }
+
+        .btn-modern {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #fff;
+            transition: 0.3s;
+            border: none;
+        }
+        .btn-modern:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+        }
+
+        .btn-calon { background: linear-gradient(135deg, #007bff, #00c6ff); }
+        .btn-pengumuman { background: linear-gradient(135deg, #28a745, #7dff88); }
+        
+        .list-group-item {
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: 0.25s;
+        }
+        .list-group-item:hover {
+            background: #f1f8ff;
+            transform: translateX(6px);
+        }
     </style>
 </head>
 <body>
@@ -17,14 +51,12 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">PPDB SMK ANTARTIKA 1 SDA</a>
-            <div class="d-flex align-items-center">
-                <span class="text-white me-3">
-                    Halo, {{ Auth::user()->name ?? Auth::user()->username ?? 'Admin' }}
-                </span>
+            <a class="navbar-brand fw-bold" href="/">PPDB SMK ANTARTIKA 1 SDA</a>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-white nav-user fw-bold">👋 Halo, {{ Auth::user()->name }}</span>
                 <form action="{{ route('logout') }}" method="POST" class="m-0">
                     @csrf
-                    <button type="submit" class="btn btn-outline-light logout-btn">Logout</button>
+                    <button type="submit" class="btn btn-outline-light px-3 fw-semibold logout-btn">Logout</button>
                 </form>
             </div>
         </div>
@@ -32,66 +64,63 @@
 
     <!-- Content -->
     <div class="container mt-5">
-        <h2 class="mb-4 text-secondary">Dashboard Admin</h2>
 
-        <div class="row g-4 mb-4">
-            <!-- Card Total Pendaftar -->
+        <h2 class="mb-4 fw-bold text-secondary">📊 Dashboard Utama</h2>
+
+        <div class="row g-4 mb-5">
+
             <div class="col-md-4">
-                <div class="card p-4 text-center text-white bg-info">
+                <div class="card bg-info text-white p-4 text-center">
                     <h5>Total Pendaftar</h5>
-                    <h2 class="fw-bold">{{ $totalPendaftar ?? 0 }}</h2>
+                    <h1 class="fw-bold display-5">{{ $totalPendaftar ?? 0 }}</h1>
                     <small>Data pendaftar aktif</small>
                 </div>
             </div>
 
-            <!-- Card Pendaftar Lunas -->
             <div class="col-md-4">
-                <div class="card p-4 text-center text-white bg-success">
+                <div class="card bg-success text-white p-4 text-center">
                     <h5>Pendaftar Lunas</h5>
-                    <h2 class="fw-bold">{{ $lunas ?? 0 }}</h2>
+                    <h1 class="fw-bold display-5">{{ $lunas ?? 0 }}</h1>
                     <small>Pembayaran sudah dikonfirmasi</small>
                 </div>
             </div>
 
-            <!-- Card Pendaftar Menunggu -->
             <div class="col-md-4">
-                <div class="card p-4 text-center text-white bg-warning">
+                <div class="card bg-warning text-white p-4 text-center">
                     <h5>Pendaftar Menunggu</h5>
-                    <h2 class="fw-bold">{{ $menunggu ?? 0 }}</h2>
+                    <h1 class="fw-bold display-5">{{ $menunggu ?? 0 }}</h1>
                     <small>Pembayaran belum lengkap</small>
                 </div>
             </div>
+
         </div>
 
-        <!-- Tombol Navigasi -->
-        <div class="mb-4">
-            <a href="{{ route('calon_siswa.create') }}" class="btn btn-primary btn-action">Tambah Calon Siswa</a>
-            <a href="{{ route('calon_siswa.index') }}" class="btn btn-secondary btn-action">List Calon Siswa</a>
+        <!-- Buttons -->
+        <div class="mb-5 d-flex gap-3">
+            <a href="{{ route('admin.calon_siswa.index') }}" class="btn btn-modern btn-calon">
+                📋 List Calon Siswa
+            </a>
+            <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-modern btn-pengumuman">
+                📢 Kelola Pengumuman
+            </a>
         </div>
 
         <!-- Pengumuman Terbaru -->
         @if(isset($pengumuman) && count($pengumuman) > 0)
-            <div class="mt-4">
-                <h3 class="mb-3">Pengumuman Terbaru</h3>
-                <div class="list-group shadow-sm">
-                    @foreach($pengumuman as $p)
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <h5 class="mb-1">{{ $p->judul }}</h5>
-                            <small class="text-muted">
-                                {{ \Carbon\Carbon::parse($p->tanggal_post)->format('d M Y') }}
-                            </small>
-                            <p class="mb-1 mt-2">
-                                {{ \Illuminate\Support\Str::limit($p->isi, 120, '...') }}
-                            </p>
-                        </a>
-                    @endforeach
-                </div>
+        <div class="mt-4">
+            <h3 class="mb-3 fw-bold text-secondary">📌 Pengumuman Terbaru</h3>
+            <div class="list-group shadow-sm">
+                @foreach($pengumuman as $p)
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <h5 class="fw-bold">{{ $p->judul }}</h5>
+                        <small class="text-muted">{{ \Carbon\Carbon::parse($p->tanggal_post)->format('d M Y') }}</small>
+                        <p class="mt-2 mb-0">{{ \Illuminate\Support\Str::limit($p->isi, 120, '...') }}</p>
+                    </a>
+                @endforeach
             </div>
-        @else
-            <div class="alert alert-info mt-4">
-                Belum ada pengumuman terbaru.
-            </div>
+        </div>
         @endif
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -6,22 +6,22 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        commands: __DIR__ . '/../routes/console.php',
-        health: '/up',
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up', // URL health check
     )
-    ->withMiddleware(function (Middleware $middleware): void {
+    ->withMiddleware(function (Middleware $middleware) {
 
-        // 🧱 Daftarkan alias middleware (tanpa Kernel)
+        // Middleware Global
+        // $middleware->append(\App\Http\Middleware\ExampleMiddleware::class);
+
+        // Alias Middleware
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'siswa' => \App\Http\Middleware\SiswaMiddleware::class,
         ]);
-
-        // Jika mau menambah global middleware bisa di sini:
-        // $middleware->append(\App\Http\Middleware\PreventRequestsDuringMaintenance::class);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (Exceptions $exceptions) {
         //
     })
     ->create();

@@ -6,17 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up()
-{
-    Schema::create('pengumumans', function (Blueprint $table) {
-        $table->id();
-        $table->string('judul');
-        $table->text('isi');
-        $table->timestamp('tanggal_post')->useCurrent();
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('pengumuman', function (Blueprint $table) {
+            $table->id();
+            $table->string('judul');
+            $table->text('isi');
+            $table->date('tanggal_post')->default(now());
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('pengumuman');
+    }
 };

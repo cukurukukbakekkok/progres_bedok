@@ -28,7 +28,7 @@
                 @endif
                 <div class="form-group mb-3">
                     <label class="form-label">Email Address</label>
-                    <input type="email" class="form-control" name="email" placeholder="Email Address"
+                    <input type="email" class="form-control" name="email" placeholder="Email Address"x
                         value="{{ session('registered_email') }}" autocomplete="off" required>
                 </div>
                 <div class="form-group mb-3">
