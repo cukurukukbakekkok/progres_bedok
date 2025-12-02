@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 
 class CalonSiswaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $calonSiswa = CalonSiswa::orderBy('created_at', 'desc')->paginate(10);
+        $query = CalonSiswa::query();
+        
+        // Search by kode_pendaftaran or nama_lengkap
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where('kode_pendaftaran', 'like', '%' . $search . '%')
+                  ->orWhere('nama_lengkap', 'like', '%' . $search . '%')
+                  ->orWhere('nisn', 'like', '%' . $search . '%');
+        }
+        
+        $calonSiswa = $query->orderBy('created_at', 'desc')->paginate(10);
         return view('admin.calon_siswa.index', compact('calonSiswa'));
     }
 
@@ -34,6 +44,8 @@ class CalonSiswaController extends Controller
     public function validasi($id)
     {
         $siswa = CalonSiswa::findOrFail($id);
+        
+        // Update status berkas di calon_siswas
         $siswa->status_berkas = 'Valid';
         $siswa->save();
 

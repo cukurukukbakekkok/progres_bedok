@@ -100,6 +100,9 @@
             <a href="{{ route('admin.calon_siswa.index') }}" class="btn btn-modern btn-calon">
                 📋 List Calon Siswa
             </a>
+            <a href="{{ route('admin.gelombang.index') }}" class="btn btn-modern" style="background: linear-gradient(135deg, #ff7a00, #ffc857); color: #fff;">
+                📆 Gelombang
+            </a>
             <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-modern btn-pengumuman">
                 📢 Kelola Pengumuman
             </a>

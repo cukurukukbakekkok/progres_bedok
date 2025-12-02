@@ -16,9 +16,11 @@
             <p class="text-muted mb-4">{{ $siswa->nisn }} • {{ $siswa->asal_sekolah }}</p>
 
             <table class="table table-striped">
+                <tr><th>Kode Pendaftaran</th><td><strong class="text-primary text-lg">{{ $siswa->kode_pendaftaran ?? '-' }}</strong></td></tr>
                 <tr><th>Nama Lengkap</th><td>{{ $siswa->nama_lengkap }}</td></tr>
                 <tr><th>NISN</th><td>{{ $siswa->nisn }}</td></tr>
                 <tr><th>Asal Sekolah</th><td>{{ $siswa->asal_sekolah }}</td></tr>
+                <tr><th>Jurusan</th><td><strong>{{ $siswa->jurusan }}</strong></td></tr>
                 <tr><th>No HP</th><td>{{ $siswa->no_hp }}</td></tr>
                 <tr><th>Alamat</th><td>{{ $siswa->alamat }}</td></tr>
                 <tr><th>Status Pembayaran</th>
@@ -56,6 +58,10 @@
 
             <h5 class="fw-bold mb-3">🛠 Aksi</h5>
             <div class="d-flex flex-wrap gap-2">
+
+                <a href="{{ route('admin.dokumen_siswa.show', $siswa->dokumenPersyaratan->id ?? '#') }}" class="btn btn-warning btn-sm">
+                    📸 Lihat Dokumen
+                </a>
 
                 <form action="{{ route('admin.calon_siswa.verifikasi', $siswa->id) }}" method="POST">@csrf
                     <button class="btn btn-success btn-sm">✔ Verifikasi Pembayaran</button>

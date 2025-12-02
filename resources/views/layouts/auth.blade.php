@@ -49,11 +49,13 @@
 
         <div class="auth-main">
             <div class="auth-wrapper v3">
+                <!-- gunakan background yang sama seperti halaman welcome -->
                 <div class="auth-form"
-                    style="background-image: url({{ asset('assets/images/my/logo-tp.png') }});background-size:cover;">
+                    style="background-image: url({{ asset('assets/images/my/antartika-img.jpeg') }}); background-size: cover; background-position: center;">
                     <div class="auth-header">
                         <a class="navbar-brand" href="/">
-                            <img width="100" src="{{ asset('assets/images/my/logo-tp.png') }}" alt="logo">
+                            <!-- ganti logo sesuai landing -->
+                            <img width="100" src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo">
                         </a>
                     </div>
 

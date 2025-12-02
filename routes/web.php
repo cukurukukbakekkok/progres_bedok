@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboard;
 use App\Http\Controllers\Admin\PengumumanController;
 use App\Http\Controllers\Admin\CalonSiswaController as AdminCalonSiswa;
+use App\Http\Controllers\Siswa\DokumenController;
 
 /* 1. Halaman Utama */
 Route::get('/', function () {
@@ -49,7 +50,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
-    /* 📌 Calon Siswa */
+   /* 📌 Gelombang Pendaftaran */
+Route::prefix('gelombang')->name('gelombang.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\GelombangPendaftaranController::class, 'index'])->name('index');
+    Route::get('/create', [\App\Http\Controllers\Admin\GelombangPendaftaranController::class, 'create'])->name('create');
+    Route::post('/', [\App\Http\Controllers\Admin\GelombangPendaftaranController::class, 'store'])->name('store');
+    Route::get('/{id}', [\App\Http\Controllers\Admin\GelombangPendaftaranController::class, 'show'])->name('show');
+    Route::get('/{id}/siswa', [\App\Http\Controllers\Admin\GelombangPendaftaranController::class, 'siswa'])->name('siswa');
+    Route::get('/{id}/edit', [\App\Http\Controllers\Admin\GelombangPendaftaranController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [\App\Http\Controllers\Admin\GelombangPendaftaranController::class, 'update'])->name('update');
+    Route::delete('/{id}', [\App\Http\Controllers\Admin\GelombangPendaftaranController::class, 'destroy'])->name('destroy');
+});
+
    /* 📌 Calon Siswa */
 Route::prefix('calon_siswa')->name('calon_siswa.')->group(function () {
 
@@ -66,6 +78,13 @@ Route::prefix('calon_siswa')->name('calon_siswa.')->group(function () {
     Route::delete('/{id}', [AdminCalonSiswa::class, 'destroy'])->name('destroy');
 });
 
+    /* 📌 Dokumen Siswa */
+Route::prefix('dokumen_siswa')->name('dokumen_siswa.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\DokumenSiswaController::class, 'index'])->name('index');
+    Route::get('/{id}', [\App\Http\Controllers\Admin\DokumenSiswaController::class, 'show'])->name('show');
+    Route::post('/{id}/validasi', [\App\Http\Controllers\Admin\DokumenSiswaController::class, 'validasi'])->name('validasi');
+});
+
 
     /* 📌 Pengumuman */
     Route::resource('pengumuman', PengumumanController::class)->names([
@@ -77,6 +96,13 @@ Route::prefix('calon_siswa')->name('calon_siswa.')->group(function () {
         'update'  => 'pengumuman.update',
         'destroy' => 'pengumuman.destroy',
     ]);
+
+    /* 📌 Pembayaran Siswa */
+    Route::prefix('pembayaran')->name('pembayaran.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\PembayaranController::class, 'index'])->name('index');
+        Route::get('/{id}', [\App\Http\Controllers\Admin\PembayaranController::class, 'show'])->name('show');
+        Route::post('/{id}/validasi', [\App\Http\Controllers\Admin\PembayaranController::class, 'validasi'])->name('validasi');
+    });
 });
 
 /* 5. Siswa */
@@ -89,7 +115,26 @@ Route::middleware(['auth', 'siswa'])->prefix('siswa')->name('siswa.')->group(fun
     Route::post('/pendaftaran', [CalonSiswaController::class, 'store'])->name('pendaftaran.store');
 });
 
+    /* Tambahan untuk dashboard siswa dan biodata siswa */
+    Route::middleware(['auth', 'siswa'])->prefix('siswa')->name('siswa.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Siswa\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/biodata', [\App\Http\Controllers\Siswa\DashboardController::class, 'biodata'])->name('biodata');
+});
+
+
 /* 6. Pengumuman Publik */
 Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.public.index');
 Route::get('/pengumuman/{pengumuman}', [PengumumanController::class, 'show'])->name('pengumuman.public.show');
 
+    /* 7. Dokumen Siswa */
+Route::middleware(['auth', 'siswa'])->prefix('siswa')->name('siswa.')->group(function () {
+    Route::get('/dokumen', [DokumenController::class, 'index'])->name('dokumen.index');
+    Route::post('/dokumen', [DokumenController::class, 'store'])->name('dokumen.store');
+});
+
+    /* 8. Pembayaran Siswa */
+Route::middleware(['auth', 'siswa'])->prefix('siswa')->name('siswa.')->group(function () {
+    Route::get('/pembayaran', [\App\Http\Controllers\Siswa\PembayaranController::class, 'index'])->name('pembayaran.index');
+    Route::post('/pembayaran', [\App\Http\Controllers\Siswa\PembayaranController::class, 'store'])->name('pembayaran.store');
+    Route::get('/pembayaran/show', [\App\Http\Controllers\Siswa\PembayaranController::class, 'show'])->name('pembayaran.show');
+});

@@ -1,11 +1,48 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    
+    .admin-wrapper {
+        background-color: #f8f9fa;
+        padding: 30px 0;
+        min-height: 100vh;
+    }
+
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 30px;
+    }
+
+    .table-wrapper {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow-x: auto;
+    }
+
+    .table-wrapper table {
+        margin-bottom: 0;
+    }
+
+    .table-row-hover:hover {
+        background-color: #f5f5f5;
+        transition: all 0.2s ease;
+    }
+</style>
+
+<div class="admin-wrapper">
+<div class="admin-container">
     <h3 class="mb-4">Kelola Pengumuman</h3>
     <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-primary mb-3">+ Tambah Pengumuman</a>
 
-    <table class="table table-bordered table-hover bg-white shadow-sm">
+    <div class="table-wrapper">
+        <table class="table table-bordered table-hover">
         <thead class="table-primary">
             <tr>
                 <th>Judul</th>

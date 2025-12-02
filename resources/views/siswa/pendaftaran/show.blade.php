@@ -25,13 +25,25 @@
             </td>
         </tr>
         <tr>
-            <th>Dokumen</th>
-            <td>
-                @if ($data->dokumen)
-                    <a href="{{ asset('storage/calon_siswa/' . $data->dokumen) }}" target="_blank">Lihat Dokumen</a>
-                @else -
-                @endif
-            </td>
+            <h4>Dokumen Persyaratan</h4>
+<ul>
+    @if($siswa->kk)
+        <li><a href="{{ asset('storage/' . $siswa->kk) }}" target="_blank">📄 Lihat Kartu Keluarga</a></li>
+    @endif
+
+    @if($siswa->akte)
+        <li><a href="{{ asset('storage/' . $siswa->akte) }}" target="_blank">📄 Lihat Akte Kelahiran</a></li>
+    @endif
+
+    @if($siswa->ijazah)
+        <li><a href="{{ asset('storage/' . $siswa->ijazah) }}" target="_blank">📄 Lihat Ijazah</a></li>
+    @endif
+
+    @if($siswa->foto)
+        <li><img src="{{ asset('storage/' . $siswa->foto) }}" width="110" class="rounded mt-2"></li>
+    @endif
+</ul>
+
         </tr>
     </table>
 
