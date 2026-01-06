@@ -1,6 +1,4 @@
-@extends('layouts.main')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 
 <style>
@@ -343,19 +341,21 @@
         </div>
 
         <!-- Alerts -->
-        @if(session('success'))
+        <?php if(session('success')): ?>
             <div class="alert-box alert-success animate__animated animate__slideInDown">
-                <strong>✅ Sukses!</strong> {{ session('success') }}
-            </div>
-        @endif
+                <strong>✅ Sukses!</strong> <?php echo e(session('success')); ?>
 
-        @if(session('error'))
+            </div>
+        <?php endif; ?>
+
+        <?php if(session('error')): ?>
             <div class="alert-box alert-error animate__animated animate__slideInDown">
-                <strong>❌ Error!</strong> {{ session('error') }}
-            </div>
-        @endif
+                <strong>❌ Error!</strong> <?php echo e(session('error')); ?>
 
-        @php
+            </div>
+        <?php endif; ?>
+
+        <?php
             $siswa = \App\Models\CalonSiswa::where('user_id', Auth::id())->first();
             $dokumen = $siswa ? \App\Models\DokumenPersyaratan::where('id_siswa', $siswa->id)->first() : null;
             
@@ -367,37 +367,39 @@
                 $dokumen->kartu_keluarga ||
                 $dokumen->ktp_ortu
             );
-        @endphp
+        ?>
 
-        @if($dokumen)
+        <?php if($dokumen): ?>
             <!-- Status Card -->
             <div class="status-card animate__animated animate__slideInUp" style="animation-delay: 0.1s;">
                 <h4>📊 Status Verifikasi Dokumen</h4>
                 
-                @if($dokumen->status_verifikasi == 'Valid')
+                <?php if($dokumen->status_verifikasi == 'Valid'): ?>
                     <span class="status-badge valid">✓ Valid - Dokumen Diterima</span>
                     <div class="alert-box alert-success" style="margin: 15px 0 0 0; border: none; background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);">
                         🎉 Semua dokumen Anda telah diverifikasi dan diterima!
                     </div>
-                @elseif($dokumen->status_verifikasi == 'Tidak Valid')
+                <?php elseif($dokumen->status_verifikasi == 'Tidak Valid'): ?>
                     <span class="status-badge tidak-valid">✗ Tidak Valid - Dokumen Ditolak</span>
-                    @if($dokumen->keterangan)
+                    <?php if($dokumen->keterangan): ?>
                         <div class="alert-box alert-error" style="margin: 15px 0 0 0; border: none;">
-                            <strong>📝 Catatan Admin:</strong><br>{{ $dokumen->keterangan }}
+                            <strong>📝 Catatan Admin:</strong><br><?php echo e($dokumen->keterangan); ?>
+
                         </div>
-                    @endif
-                @elseif($hasUploadedDocuments)
+                    <?php endif; ?>
+                <?php elseif($hasUploadedDocuments): ?>
                     <span class="status-badge menunggu">⏳ Menunggu Verifikasi</span>
                     <div class="alert-box alert-success" style="margin: 15px 0 0 0; border: none; background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);">
                         📝 Dokumen Anda sedang diproses oleh admin. Harap tunggu...
                     </div>
-                    {{-- Tampil catatan admin jika ada (saat revisi dokumen) --}}
-                    @if($dokumen->keterangan)
+                    
+                    <?php if($dokumen->keterangan): ?>
                         <div class="alert-box alert-error" style="margin: 15px 0 0 0; border: none;">
-                            <strong>📝 Catatan Admin untuk Perbaikan:</strong><br>{{ $dokumen->keterangan }}
+                            <strong>📝 Catatan Admin untuk Perbaikan:</strong><br><?php echo e($dokumen->keterangan); ?>
+
                         </div>
-                    @endif
-                @endif
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
 
             <!-- Instructions -->
@@ -414,32 +416,32 @@
 
             <!-- Form Card -->
             <div class="form-card animate__animated animate__slideInUp" style="animation-delay: 0.3s;">
-                <form id="dokumen-form" action="{{ route('siswa.dokumen.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
+                <form id="dokumen-form" action="<?php echo e(route('siswa.dokumen.store')); ?>" method="POST" enctype="multipart/form-data">
+                    <?php echo csrf_field(); ?>
 
                     <!-- Akte Kelahiran -->
                     <div class="document-item">
                         <h5>
                             <span>🎫</span>
                             Akte Kelahiran
-                            @if($dokumen->akte_kelahiran)
+                            <?php if($dokumen->akte_kelahiran): ?>
                                 <span style="margin-left: auto; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">✓ SUDAH DIUPLOAD</span>
-                            @endif
+                            <?php endif; ?>
                         </h5>
                         <p>Fotokopi akte kelahiran resmi dari Disdukcapil</p>
                         
-                        <div id="akte_kelahiran_upload" style="display: {{ $dokumen->akte_kelahiran ? 'none !important' : 'block' }};">
+                        <div id="akte_kelahiran_upload" style="display: <?php echo e($dokumen->akte_kelahiran ? 'none !important' : 'block'); ?>;">
                             <label class="file-input-label">
                                 📁 Pilih File
                                 <input type="file" name="akte_kelahiran" accept=".pdf,.jpg,.jpeg,.png">
                             </label>
                         </div>
 
-                        @if($dokumen->akte_kelahiran)
+                        <?php if($dokumen->akte_kelahiran): ?>
                             <div class="file-info" style="display: block;">
-                                <span class="file-name">✓ {{ basename($dokumen->akte_kelahiran) }}</span>
+                                <span class="file-name">✓ <?php echo e(basename($dokumen->akte_kelahiran)); ?></span>
                                 <div>
-                                    <a href="{{ asset('storage/' . $dokumen->akte_kelahiran) }}" target="_blank" class="view-btn">
+                                    <a href="<?php echo e(asset('storage/' . $dokumen->akte_kelahiran)); ?>" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('akte_kelahiran_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
@@ -447,13 +449,20 @@
                                     </button>
                                 </div>
                             </div>
-                        @else
+                        <?php else: ?>
                             <div class="file-info" style="display: none;"></div>
-                        @endif
+                        <?php endif; ?>
 
-                        @error('akte_kelahiran')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['akte_kelahiran'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="error-message"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <!-- Ijazah SMP -->
@@ -461,24 +470,24 @@
                         <h5>
                             <span>📜</span>
                             Ijazah SMP/MTS
-                            @if($dokumen->ijazah_smp)
+                            <?php if($dokumen->ijazah_smp): ?>
                                 <span style="margin-left: auto; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">✓ SUDAH DIUPLOAD</span>
-                            @endif
+                            <?php endif; ?>
                         </h5>
                         <p>Fotokopi ijazah SMP atau MTS asli</p>
                         
-                        <div id="ijazah_smp_upload" style="display: {{ $dokumen->ijazah_smp ? 'none !important' : 'block' }};">
+                        <div id="ijazah_smp_upload" style="display: <?php echo e($dokumen->ijazah_smp ? 'none !important' : 'block'); ?>;">
                             <label class="file-input-label">
                                 📁 Pilih File
                                 <input type="file" name="ijazah_smp" accept=".pdf,.jpg,.jpeg,.png">
                             </label>
                         </div>
 
-                        @if($dokumen->ijazah_smp)
+                        <?php if($dokumen->ijazah_smp): ?>
                             <div class="file-info" style="display: block;">
-                                <span class="file-name">✓ {{ basename($dokumen->ijazah_smp) }}</span>
+                                <span class="file-name">✓ <?php echo e(basename($dokumen->ijazah_smp)); ?></span>
                                 <div>
-                                    <a href="{{ asset('storage/' . $dokumen->ijazah_smp) }}" target="_blank" class="view-btn">
+                                    <a href="<?php echo e(asset('storage/' . $dokumen->ijazah_smp)); ?>" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('ijazah_smp_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
@@ -486,13 +495,20 @@
                                     </button>
                                 </div>
                             </div>
-                        @else
+                        <?php else: ?>
                             <div class="file-info" style="display: none;"></div>
-                        @endif
+                        <?php endif; ?>
 
-                        @error('ijazah_smp')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['ijazah_smp'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="error-message"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <!-- SKL -->
@@ -500,24 +516,24 @@
                         <h5>
                             <span>✅</span>
                             SKL (Surat Keterangan Lulus)
-                            @if($dokumen->skl_smp)
+                            <?php if($dokumen->skl_smp): ?>
                                 <span style="margin-left: auto; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">✓ SUDAH DIUPLOAD</span>
-                            @endif
+                            <?php endif; ?>
                         </h5>
                         <p>Surat keterangan lulus dari sekolah asal</p>
                         
-                        <div id="skl_smp_upload" style="display: {{ $dokumen->skl_smp ? 'none !important' : 'block' }};">
+                        <div id="skl_smp_upload" style="display: <?php echo e($dokumen->skl_smp ? 'none !important' : 'block'); ?>;">
                             <label class="file-input-label">
                                 📁 Pilih File
                                 <input type="file" name="skl_smp" accept=".pdf,.jpg,.jpeg,.png">
                             </label>
                         </div>
 
-                        @if($dokumen->skl_smp)
+                        <?php if($dokumen->skl_smp): ?>
                             <div class="file-info" style="display: block;">
-                                <span class="file-name">✓ {{ basename($dokumen->skl_smp) }}</span>
+                                <span class="file-name">✓ <?php echo e(basename($dokumen->skl_smp)); ?></span>
                                 <div>
-                                    <a href="{{ asset('storage/' . $dokumen->skl_smp) }}" target="_blank" class="view-btn">
+                                    <a href="<?php echo e(asset('storage/' . $dokumen->skl_smp)); ?>" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('skl_smp_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
@@ -525,13 +541,20 @@
                                     </button>
                                 </div>
                             </div>
-                        @else
+                        <?php else: ?>
                             <div class="file-info" style="display: none;"></div>
-                        @endif
+                        <?php endif; ?>
 
-                        @error('skl_smp')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['skl_smp'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="error-message"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <!-- Kartu Keluarga -->
@@ -539,24 +562,24 @@
                         <h5>
                             <span>👨‍👩‍👧‍👦</span>
                             Kartu Keluarga
-                            @if($dokumen->kartu_keluarga)
+                            <?php if($dokumen->kartu_keluarga): ?>
                                 <span style="margin-left: auto; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">✓ SUDAH DIUPLOAD</span>
-                            @endif
+                            <?php endif; ?>
                         </h5>
                         <p>Fotokopi kartu keluarga dari kantor kelurahan/desa</p>
                         
-                        <div id="kartu_keluarga_upload" style="display: {{ $dokumen->kartu_keluarga ? 'none !important' : 'block' }};">
+                        <div id="kartu_keluarga_upload" style="display: <?php echo e($dokumen->kartu_keluarga ? 'none !important' : 'block'); ?>;">
                             <label class="file-input-label">
                                 📁 Pilih File
                                 <input type="file" name="kartu_keluarga" accept=".pdf,.jpg,.jpeg,.png">
                             </label>
                         </div>
 
-                        @if($dokumen->kartu_keluarga)
+                        <?php if($dokumen->kartu_keluarga): ?>
                             <div class="file-info" style="display: block;">
-                                <span class="file-name">✓ {{ basename($dokumen->kartu_keluarga) }}</span>
+                                <span class="file-name">✓ <?php echo e(basename($dokumen->kartu_keluarga)); ?></span>
                                 <div>
-                                    <a href="{{ asset('storage/' . $dokumen->kartu_keluarga) }}" target="_blank" class="view-btn">
+                                    <a href="<?php echo e(asset('storage/' . $dokumen->kartu_keluarga)); ?>" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('kartu_keluarga_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
@@ -564,13 +587,20 @@
                                     </button>
                                 </div>
                             </div>
-                        @else
+                        <?php else: ?>
                             <div class="file-info" style="display: none;"></div>
-                        @endif
+                        <?php endif; ?>
 
-                        @error('kartu_keluarga')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['kartu_keluarga'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="error-message"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <!-- KTP Orang Tua -->
@@ -578,24 +608,24 @@
                         <h5>
                             <span>🆔</span>
                             KTP Orang Tua
-                            @if($dokumen->ktp_ortu)
+                            <?php if($dokumen->ktp_ortu): ?>
                                 <span style="margin-left: auto; background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">✓ SUDAH DIUPLOAD</span>
-                            @endif
+                            <?php endif; ?>
                         </h5>
                         <p>Fotokopi KTP salah satu orang tua</p>
                         
-                        <div id="ktp_ortu_upload" style="display: {{ $dokumen->ktp_ortu ? 'none !important' : 'block' }};">
+                        <div id="ktp_ortu_upload" style="display: <?php echo e($dokumen->ktp_ortu ? 'none !important' : 'block'); ?>;">
                             <label class="file-input-label">
                                 📁 Pilih File
                                 <input type="file" name="ktp_ortu" accept=".pdf,.jpg,.jpeg,.png">
                             </label>
                         </div>
 
-                        @if($dokumen->ktp_ortu)
+                        <?php if($dokumen->ktp_ortu): ?>
                             <div class="file-info" style="display: block;">
-                                <span class="file-name">✓ {{ basename($dokumen->ktp_ortu) }}</span>
+                                <span class="file-name">✓ <?php echo e(basename($dokumen->ktp_ortu)); ?></span>
                                 <div>
-                                    <a href="{{ asset('storage/' . $dokumen->ktp_ortu) }}" target="_blank" class="view-btn">
+                                    <a href="<?php echo e(asset('storage/' . $dokumen->ktp_ortu)); ?>" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('ktp_ortu_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
@@ -603,13 +633,20 @@
                                     </button>
                                 </div>
                             </div>
-                        @else
+                        <?php else: ?>
                             <div class="file-info" style="display: none;"></div>
-                        @endif
+                        <?php endif; ?>
 
-                        @error('ktp_ortu')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['ktp_ortu'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="error-message"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <!-- Submit Button -->
@@ -619,19 +656,19 @@
                 </form>
             </div>
 
-        @else
+        <?php else: ?>
             <!-- Empty State -->
             <div class="status-card">
                 <div class="empty-state">
                     <div class="empty-state-icon">📋</div>
                     <h3>Belum Ada Data Pendaftaran</h3>
                     <p>Anda harus melakukan pendaftaran terlebih dahulu sebelum mengupload dokumen.</p>
-                    <a href="{{ route('siswa.pendaftaran') }}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; margin-top: 15px;">
+                    <a href="<?php echo e(route('siswa.pendaftaran')); ?>" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; margin-top: 15px;">
                         Lakukan Pendaftaran
                     </a>
                 </div>
             </div>
-        @endif
+        <?php endif; ?>
     </div>
 </div>
 
@@ -698,4 +735,6 @@
     }
 </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.main', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\BEDOK_UKK_PPDB2\resources\views/siswa/dokumen/upload.blade.php ENDPATH**/ ?>

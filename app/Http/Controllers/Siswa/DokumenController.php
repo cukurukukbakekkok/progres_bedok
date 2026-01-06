@@ -39,13 +39,13 @@ class DokumenController extends Controller
             'akte_kelahiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'ijazah_smp' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'skl_smp' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'kk' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'kartu_keluarga' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'ktp_ortu' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ], [
             'akte_kelahiran.max' => 'Ukuran file akte kelahiran maksimal 2MB',
             'ijazah_smp.max' => 'Ukuran file ijazah SMP maksimal 2MB',
             'skl_smp.max' => 'Ukuran file SKL maksimal 2MB',
-            'kk.max' => 'Ukuran file kartu keluarga maksimal 2MB',
+            'kartu_keluarga.max' => 'Ukuran file kartu keluarga maksimal 2MB',
             'ktp_ortu.max' => 'Ukuran file KTP orang tua maksimal 2MB',
         ]);
 
@@ -77,11 +77,11 @@ class DokumenController extends Controller
             $data['skl_smp'] = $request->file('skl_smp')->store('dokumen', 'public');
         }
 
-        if ($request->hasFile('kk')) {
+        if ($request->hasFile('kartu_keluarga')) {
             if ($dokumen->kartu_keluarga && file_exists(storage_path('app/public/' . $dokumen->kartu_keluarga))) {
                 unlink(storage_path('app/public/' . $dokumen->kartu_keluarga));
             }
-            $data['kartu_keluarga'] = $request->file('kk')->store('dokumen', 'public');
+            $data['kartu_keluarga'] = $request->file('kartu_keluarga')->store('dokumen', 'public');
         }
 
         if ($request->hasFile('ktp_ortu')) {
@@ -96,6 +96,7 @@ class DokumenController extends Controller
         }
 
         // Reset status verifikasi menjadi "Belum" jika ada perubahan dokumen
+        // Tapi jangan hapus keterangan admin agar siswa tahu apa yang perlu diperbaiki
         $data['status_verifikasi'] = 'Belum';
         $dokumen->update($data);
 

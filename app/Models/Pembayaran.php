@@ -10,9 +10,13 @@ class Pembayaran extends Model
         'id_siswa',
         'id_gelombang',
         'nominal',
+        'harga_awal',
+        'potongan',
+        'keterangan_potongan',
         'metode_bayar',
         'status',
         'bukti_bayar',
+        'tanggal_pembayaran',
         'verified_at',
         'id_admin_verifikasi',
         'keterangan',
@@ -20,6 +24,7 @@ class Pembayaran extends Model
 
     protected $casts = [
         'verified_at' => 'datetime',
+        'tanggal_pembayaran' => 'datetime',
     ];
 
     public function siswa()

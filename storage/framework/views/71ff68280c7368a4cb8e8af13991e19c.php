@@ -1,6 +1,4 @@
-@extends('layouts.main')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 
 <style>
@@ -402,86 +400,89 @@
         </div>
 
         <!-- Alerts -->
-        @if(session('success'))
+        <?php if(session('success')): ?>
             <div class="alert-box alert-success animate__animated animate__slideInDown">
-                <strong>✅ Sukses!</strong> {{ session('success') }}
-            </div>
-        @endif
+                <strong>✅ Sukses!</strong> <?php echo e(session('success')); ?>
 
-        @if(session('error'))
+            </div>
+        <?php endif; ?>
+
+        <?php if(session('error')): ?>
             <div class="alert-box alert-error animate__animated animate__slideInDown">
-                <strong>❌ Error!</strong> {{ session('error') }}
-            </div>
-        @endif
+                <strong>❌ Error!</strong> <?php echo e(session('error')); ?>
 
-        @if($gelombang)
+            </div>
+        <?php endif; ?>
+
+        <?php if($gelombang): ?>
             <!-- Status Pembayaran -->
             <div class="status-card animate__animated animate__slideInUp" style="animation-delay: 0.1s;">
                 <h3>📊 Status Pembayaran Anda</h3>
 
-                @if($pembayaran)
-                    @if($pembayaran->status == 'lunas')
+                <?php if($pembayaran): ?>
+                    <?php if($pembayaran->status == 'lunas'): ?>
                         <span class="status-badge lunas">✓ Pembayaran Lunas</span>
                         <div class="alert-box alert-success" style="margin: 15px 0 0 0; border: none; background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);">
                             🎉 Pembayaran Anda telah dikonfirmasi oleh admin. Terima kasih!
                         </div>
-                    @elseif($pembayaran->status == 'gagal')
+                    <?php elseif($pembayaran->status == 'gagal'): ?>
                         <span class="status-badge gagal">✗ Pembayaran Ditolak</span>
-                        @if($pembayaran->keterangan)
+                        <?php if($pembayaran->keterangan): ?>
                             <div class="alert-box alert-error" style="margin: 15px 0 0 0; border: none;">
-                                <strong>Catatan Admin:</strong> {{ $pembayaran->keterangan }}
+                                <strong>Catatan Admin:</strong> <?php echo e($pembayaran->keterangan); ?>
+
                             </div>
-                        @endif
-                    @elseif($pembayaran->status == 'menunggu' && $pembayaran->bukti_bayar)
+                        <?php endif; ?>
+                    <?php elseif($pembayaran->status == 'menunggu' && $pembayaran->bukti_bayar): ?>
                         <span class="status-badge menunggu">⏳ Menunggu Verifikasi</span>
                         <div class="alert-box alert-success" style="margin: 15px 0 0 0; border: none; background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);">
                             📝 Bukti pembayaran Anda sedang diproses oleh admin. Harap tunggu...
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                     <div class="status-info" style="margin-top: 25px;">
                         <div class="info-item">
                             <div class="info-label">Nominal Pembayaran</div>
-                            <div class="info-value amount">Rp {{ number_format($pembayaran->nominal, 0, ',', '.') }}</div>
+                            <div class="info-value amount">Rp <?php echo e(number_format($pembayaran->nominal, 0, ',', '.')); ?></div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Tanggal Pembayaran</div>
-                            <div class="info-value">{{ $pembayaran->tanggal_pembayaran ? \Carbon\Carbon::parse($pembayaran->tanggal_pembayaran)->format('d M Y') : '-' }}</div>
+                            <div class="info-value"><?php echo e($pembayaran->tanggal_pembayaran ? \Carbon\Carbon::parse($pembayaran->tanggal_pembayaran)->format('d M Y') : '-'); ?></div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Bukti Pembayaran</div>
-                            <div class="info-value">{{ $pembayaran->bukti_bayar ? '✓ Sudah Diupload' : '✗ Belum' }}</div>
+                            <div class="info-value"><?php echo e($pembayaran->bukti_bayar ? '✓ Sudah Diupload' : '✗ Belum'); ?></div>
                         </div>
                     </div>
 
-                    @if($pembayaran->harga_awal || $pembayaran->potongan)
+                    <?php if($pembayaran->harga_awal || $pembayaran->potongan): ?>
                     <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #f0f7ff 0%, #e8f4f8 100%); border-radius: 12px; border-left: 4px solid #667eea;">
                         <h5 style="margin-bottom: 15px; color: #333; font-weight: 700;">📋 Rincian Pembayaran</h5>
                         <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #ddd;">
                             <span style="color: #666;">Harga Awal:</span>
-                            <span style="font-weight: 600; color: #333;">Rp {{ number_format($pembayaran->harga_awal ?? 0, 0, ',', '.') }}</span>
+                            <span style="font-weight: 600; color: #333;">Rp <?php echo e(number_format($pembayaran->harga_awal ?? 0, 0, ',', '.')); ?></span>
                         </div>
-                        @if($pembayaran->potongan > 0)
+                        <?php if($pembayaran->potongan > 0): ?>
                             <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #ddd;">
                                 <span style="color: #666;">
-                                    Potongan{{ $pembayaran->keterangan_potongan ? ' (' . $pembayaran->keterangan_potongan . ')' : '' }}:
+                                    Potongan<?php echo e($pembayaran->keterangan_potongan ? ' (' . $pembayaran->keterangan_potongan . ')' : ''); ?>:
                                 </span>
-                                <span style="font-weight: 600; color: #dc3545;">- Rp {{ number_format($pembayaran->potongan, 0, ',', '.') }}</span>
+                                <span style="font-weight: 600; color: #dc3545;">- Rp <?php echo e(number_format($pembayaran->potongan, 0, ',', '.')); ?></span>
                             </div>
-                        @endif
+                        <?php endif; ?>
                         <div style="display: flex; justify-content: space-between; padding: 12px 0;">
                             <span style="color: #333; font-weight: 700; font-size: 1.05rem;">Total Pembayaran:</span>
-                            <span style="font-weight: 700; color: #667eea; font-size: 1.1rem;">Rp {{ number_format($pembayaran->nominal, 0, ',', '.') }}</span>
+                            <span style="font-weight: 700; color: #667eea; font-size: 1.1rem;">Rp <?php echo e(number_format($pembayaran->nominal, 0, ',', '.')); ?></span>
                         </div>
                     </div>
-                    @endif
-                @else
+                    <?php endif; ?>
+                <?php else: ?>
                     <div class="empty-state">
                         <div class="empty-state-icon">💭</div>
                         <h3>Belum Ada Data Pembayaran</h3>
                         <p>Anda belum melakukan pembayaran. Silakan lakukan pembayaran ke rekening di bawah ini.</p>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
 
             <!-- Bank Information -->
@@ -541,7 +542,7 @@
 
                     <div class="bank-row">
                         <span class="bank-label">Nominal</span>
-                        <span class="bank-value">Rp {{ number_format($siswa->nominal_pembayaran ?? 0, 0, ',', '.') }}</span>
+                        <span class="bank-value">Rp <?php echo e(number_format($siswa->nominal_pembayaran ?? 0, 0, ',', '.')); ?></span>
                     </div>
                 </div>
             </div>
@@ -550,7 +551,7 @@
             <div class="upload-card animate__animated animate__slideInUp" style="animation-delay: 0.3s;">
                 <h3>📤 Upload Bukti Pembayaran</h3>
                 
-                @if(!$pembayaran || !$pembayaran->bukti_bayar)
+                <?php if(!$pembayaran || !$pembayaran->bukti_bayar): ?>
                     <!-- Form Upload (Belum Ada File) -->
                     <div class="upload-instructions">
                         <strong>Petunjuk Upload:</strong>
@@ -562,8 +563,8 @@
                         </ul>
                     </div>
 
-                    <form action="{{ route('siswa.pembayaran.store') }}" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
-                        @csrf
+                    <form action="<?php echo e(route('siswa.pembayaran.store')); ?>" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                        <?php echo csrf_field(); ?>
                         
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333;">Pilih Metode Pembayaran:</label>
@@ -594,44 +595,51 @@
                                 </label>
                                 <div id="file_name_display" style="margin-top: 10px; color: #28a745; font-weight: 600; display: none;"></div>
                             </div>
-                            @error('bukti_bayar')
-                                <div style="color: #dc3545; font-size: 0.9rem; margin-top: 8px;">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['bukti_bayar'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div style="color: #dc3545; font-size: 0.9rem; margin-top: 8px;"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <button type="submit" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease;">
                             ✅ Upload & Kirim Verifikasi
                         </button>
                     </form>
-                @else
+                <?php else: ?>
                     <!-- Tampil Foto Bukti Pembayaran -->
                     <div style="background: #f9f9f9; padding: 20px; border-radius: 12px;">
                         <h5 style="margin-bottom: 15px; color: #333;">📸 Bukti Pembayaran yang Diupload:</h5>
                         
-                        @php
+                        <?php
                             $ext = pathinfo($pembayaran->bukti_bayar, PATHINFO_EXTENSION);
                             $isPDF = strtolower($ext) === 'pdf';
-                        @endphp
+                        ?>
                         
-                        @if($isPDF)
+                        <?php if($isPDF): ?>
                             <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; text-align: center; margin-bottom: 15px;">
                                 <div style="font-size: 3rem; margin-bottom: 10px;">📄</div>
-                                <div style="color: #666;">File PDF: {{ basename($pembayaran->bukti_bayar) }}</div>
+                                <div style="color: #666;">File PDF: <?php echo e(basename($pembayaran->bukti_bayar)); ?></div>
                             </div>
-                        @else
-                            <img src="{{ asset('storage/' . $pembayaran->bukti_bayar) }}" alt="Bukti Pembayaran" style="max-width: 100%; max-height: 400px; border-radius: 8px; border: 2px solid #667eea; margin-bottom: 15px;">
-                        @endif
+                        <?php else: ?>
+                            <img src="<?php echo e(asset('storage/' . $pembayaran->bukti_bayar)); ?>" alt="Bukti Pembayaran" style="max-width: 100%; max-height: 400px; border-radius: 8px; border: 2px solid #667eea; margin-bottom: 15px;">
+                        <?php endif; ?>
                         
                         <div style="display: flex; gap: 10px;">
-                            @if(!$isPDF)
-                                <a href="{{ asset('storage/' . $pembayaran->bukti_bayar) }}" target="_blank" style="flex: 1; padding: 12px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 600;">
+                            <?php if(!$isPDF): ?>
+                                <a href="<?php echo e(asset('storage/' . $pembayaran->bukti_bayar)); ?>" target="_blank" style="flex: 1; padding: 12px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 600;">
                                     👁️ Lihat Foto Penuh
                                 </a>
-                            @else
-                                <a href="{{ asset('storage/' . $pembayaran->bukti_bayar) }}" download style="flex: 1; padding: 12px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 600;">
+                            <?php else: ?>
+                                <a href="<?php echo e(asset('storage/' . $pembayaran->bukti_bayar)); ?>" download style="flex: 1; padding: 12px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 600;">
                                     ⬇️ Download PDF
                                 </a>
-                            @endif
+                            <?php endif; ?>
                             
                             <button type="button" onclick="document.getElementById('ganti_bukti_form').style.display='block'; document.getElementById('bukti_display').style.display='none';" style="flex: 1; padding: 12px; background: #ff6b6b; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
                                 🔄 Ganti Bukti
@@ -643,22 +651,22 @@
                     <div id="ganti_bukti_form" style="display: none; background: #fff3cd; padding: 20px; border-radius: 12px; margin-top: 15px; border: 2px solid #ffc107;">
                         <h5 style="margin-bottom: 15px; color: #333;">📝 Upload Bukti Pembayaran Baru:</h5>
                         
-                        <form action="{{ route('siswa.pembayaran.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
+                        <form action="<?php echo e(route('siswa.pembayaran.store')); ?>" method="POST" enctype="multipart/form-data">
+                            <?php echo csrf_field(); ?>
                             
                             <div style="margin-bottom: 20px;">
                                 <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333;">Pilih Metode Pembayaran:</label>
                                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="radio" name="metode_bayar" value="transfer" {{ $pembayaran && $pembayaran->metode_bayar === 'transfer' ? 'checked' : '' }}>
+                                        <input type="radio" name="metode_bayar" value="transfer" <?php echo e($pembayaran && $pembayaran->metode_bayar === 'transfer' ? 'checked' : ''); ?>>
                                         <span>Transfer Bank</span>
                                     </label>
                                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="radio" name="metode_bayar" value="e-wallet" {{ $pembayaran && $pembayaran->metode_bayar === 'e-wallet' ? 'checked' : '' }}>
+                                        <input type="radio" name="metode_bayar" value="e-wallet" <?php echo e($pembayaran && $pembayaran->metode_bayar === 'e-wallet' ? 'checked' : ''); ?>>
                                         <span>E-Wallet</span>
                                     </label>
                                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="radio" name="metode_bayar" value="VA" {{ $pembayaran && $pembayaran->metode_bayar === 'VA' ? 'checked' : '' }}>
+                                        <input type="radio" name="metode_bayar" value="VA" <?php echo e($pembayaran && $pembayaran->metode_bayar === 'VA' ? 'checked' : ''); ?>>
                                         <span>Virtual Account</span>
                                     </label>
                                 </div>
@@ -689,7 +697,7 @@
                     </div>
 
                     <div id="bukti_display"></div>
-                @endif
+                <?php endif; ?>
             </div>
 
             <!-- Payment Timeline -->
@@ -719,7 +727,7 @@
                 </div>
             </div>
 
-        @else
+        <?php else: ?>
             <!-- Empty State -->
             <div class="status-card" style="animation-delay: 0.1s;">
                 <div class="empty-state">
@@ -728,7 +736,7 @@
                     <p>Silakan lakukan pendaftaran terlebih dahulu untuk melihat informasi pembayaran.</p>
                 </div>
             </div>
-        @endif
+        <?php endif; ?>
 
         <!-- Help Section -->
         <div class="status-card animate__animated animate__slideInUp" style="animation-delay: 0.5s; background: linear-gradient(135deg, #f0f7ff 0%, #e8f4f8 100%); border-left: 4px solid #667eea;">
@@ -814,4 +822,6 @@
     }
 </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.main', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\BEDOK_UKK_PPDB2\resources\views/siswa/pembayaran/index.blade.php ENDPATH**/ ?>

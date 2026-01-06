@@ -75,7 +75,8 @@ class PembayaranController extends Controller
             $pembayaran = new Pembayaran();
             $pembayaran->id_siswa = $siswa->id;
             $pembayaran->id_gelombang = $gelombang->id;
-            $pembayaran->nominal = $siswa->nominal_pembayaran ?? 0; // Ambil dari jurusan siswa
+            $pembayaran->nominal = $siswa->nominal_pembayaran ?? 0;
+            $pembayaran->harga_awal = $siswa->nominal_pembayaran ?? 0; // Set harga awal
         }
 
         // Handle file upload
@@ -92,6 +93,7 @@ class PembayaranController extends Controller
 
         $pembayaran->metode_bayar = $request->metode_bayar;
         $pembayaran->status = 'menunggu'; // Reset status ke menunggu ketika upload baru
+        $pembayaran->tanggal_pembayaran = now(); // Set tanggal pembayaran otomatis
         $pembayaran->verified_at = null;
         $pembayaran->id_admin_verifikasi = null;
         $pembayaran->save();

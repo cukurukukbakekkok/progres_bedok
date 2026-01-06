@@ -40,6 +40,35 @@
 
             <hr>
 
+            <!-- Rincian Pembayaran -->
+            @if($pembayaran->harga_awal)
+                <h5 class="fw-bold mb-3">📋 Rincian Pembayaran</h5>
+                <table class="table table-sm mb-4">
+                    <tr>
+                        <td>Harga Awal:</td>
+                        <td class="text-end"><strong>Rp {{ number_format($pembayaran->harga_awal, 0, ',', '.') }}</strong></td>
+                    </tr>
+                    @if($pembayaran->potongan > 0)
+                        <tr>
+                            <td>
+                                Potongan
+                                @if($pembayaran->keterangan_potongan)
+                                    ({{ $pembayaran->keterangan_potongan }})
+                                @endif
+                                :
+                            </td>
+                            <td class="text-end"><strong class="text-danger">- Rp {{ number_format($pembayaran->potongan, 0, ',', '.') }}</strong></td>
+                        </tr>
+                    @endif
+                    <tr style="border-top: 2px solid #667eea;">
+                        <td><strong>Total Pembayaran:</strong></td>
+                        <td class="text-end"><strong class="text-primary">Rp {{ number_format($pembayaran->nominal, 0, ',', '.') }}</strong></td>
+                    </tr>
+                </table>
+            @endif
+
+            <hr>
+
             <!-- Preview Bukti Pembayaran -->
             <h5 class="fw-bold mb-3">📸 Bukti Pembayaran</h5>
             @if($pembayaran->bukti_bayar)
