@@ -11,14 +11,48 @@ class CalonSiswa extends Model
         'kode_pendaftaran',
         'nama_lengkap',
         'nisn',
+        'nik',
         'tempat_lahir',
         'tanggal_lahir',
         'jenis_kelamin',
+        'agama',
+        'berat_badan',
+        'tinggi_badan',
         'asal_sekolah',
+        'no_hp',
+        'no_wa',
         'nama_orang_tua',
         'alamat',
-        'no_hp',
+        'provinsi',
+        'kabupaten',
+        'kecamatan',
+        'kelurahan',
+        'kode_pos',
+        'rt_rw',
+        'nama_ayah',
+        'tempat_lahir_ayah',
+        'tanggal_lahir_ayah',
+        'pendidikan_ayah',
+        'pekerjaan_ayah',
+        'no_hp_ayah',
+        'nama_ibu',
+        'tempat_lahir_ibu',
+        'tanggal_lahir_ibu',
+        'pendidikan_ibu',
+        'pekerjaan_ibu',
+        'no_hp_ibu',
+        'status_keluarga',
+        'nama_wali',
+        'tempat_lahir_wali',
+        'tanggal_lahir_wali',
+        'pendidikan_wali',
+        'pekerjaan_wali',
+        'no_hp_wali',
+        'penghasilan_ayah',
+        'penghasilan_ibu',
+        'penghasilan_wali',
         'jurusan',
+        'kelas_id',
         'harga_jurusan',
         'nominal_pembayaran',
         'foto',
@@ -27,6 +61,7 @@ class CalonSiswa extends Model
         'status_berkas',
         'status_kelulusan',
         'status_pembayaran',
+        'tahap_form',
     ];
 
     /**
@@ -71,6 +106,11 @@ class CalonSiswa extends Model
     public function gelombang()
     {
         return $this->belongsTo(GelombangPendaftaran::class, 'id_gelombang');
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(\App\Models\Kelas::class, 'kelas_id');
     }
 
     public function pembayaran()

@@ -9,6 +9,8 @@
     <table class="table">
         <tr><th>Nama Lengkap</th><td>{{ $data->nama_lengkap }}</td></tr>
         <tr><th>NISN</th><td>{{ $data->nisn }}</td></tr>
+        <tr><th>Jurusan</th><td>{{ $data->jurusan }}</td></tr>
+        <tr><th>Kelas</th><td>{{ $data->kelas->nama ?? '-' }}</td></tr>
         <tr><th>Tempat, Tanggal Lahir</th><td>{{ $data->tempat_lahir }}, {{ $data->tanggal_lahir }}</td></tr>
         <tr><th>Jenis Kelamin</th><td>{{ $data->jenis_kelamin }}</td></tr>
         <tr><th>Asal Sekolah</th><td>{{ $data->asal_sekolah }}</td></tr>

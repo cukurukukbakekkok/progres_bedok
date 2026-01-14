@@ -1,7 +1,25 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('content')
-<div class="container py-4">
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    
+    .admin-wrapper {
+        background-color: #f8f9fa;
+        padding: 30px 0;
+        min-height: 100vh;
+    }
+
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 30px;
+    }
+</style>
+<div class="admin-wrapper">
+<div class="admin-container">
 
     <h3 class="fw-bold mb-4 text-primary">💳 Detail Pembayaran</h3>
 
@@ -130,6 +148,7 @@
         </div>
     </div>
 
+</div>
 </div>
 
 {{-- Animasi --}}

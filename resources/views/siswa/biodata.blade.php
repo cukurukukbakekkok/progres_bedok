@@ -429,7 +429,7 @@
                     <div class="empty-state-icon">📭</div>
                     <h3>Belum Ada Data Pendaftaran</h3>
                     <p>Anda belum mengisi formulir pendaftaran. Silakan isi terlebih dahulu untuk melanjutkan.</p>
-                    <a href="{{ route('siswa.pendaftaran') }}" class="btn-action btn-primary-action">
+                    <a href="{{ route('siswa.pendaftaran.create') }}" class="btn-action btn-primary-action">
                         Mulai Pendaftaran
                     </a>
                 </div>

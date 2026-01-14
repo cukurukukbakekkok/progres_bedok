@@ -36,16 +36,60 @@
         <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
 
         <link rel="stylesheet" href="{{ asset('assets/css/landing.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/landing-modern.css') }}">
 
 
         <style>
             .navbar {
-                transition: background .2s ease-in-out;
+                transition: background .2s ease-in-out, color .2s ease-in-out;
             }
 
+            /* Default: transparent/colored header (landing hero) */
             .navbar.default {
-                transition: background .2s ease-in-out;
+                background: transparent !important;
+                box-shadow: none !important;
             }
+
+            /* Scrolled / collapsed: keep a subtle purple tint */
+            .navbar.top-nav-collapse {
+                background: rgba(102, 126, 234, 0.08) !important; /* subtle purple tint */
+                box-shadow: 0 6px 18px rgba(102, 126, 234, 0.1) !important;
+            }
+
+            /* Link colors: keep white on both states for better contrast */
+            .navbar.default .nav-link,
+            .navbar.default .navbar-brand,
+            .navbar.default .btn,
+            .navbar.top-nav-collapse .nav-link,
+            .navbar.top-nav-collapse .btn {
+                color: rgba(255,255,255,0.95) !important;
+            }
+
+            /* Button and active link styles for contrast */
+            .navbar .nav-link { transition: all 0.18s ease-in-out; }
+
+            /* Active link pill */
+            .navbar .nav-link.active {
+                background: rgba(255,255,255,0.12);
+                color: #fff !important;
+                padding: 6px 10px;
+                border-radius: 8px;
+            }
+
+            .navbar .btn-primary {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                color: #fff !important;
+                border: none !important;
+                box-shadow: 0 8px 24px rgba(102, 126, 234, 0.12) !important;
+                transition: transform 0.18s ease, filter 0.18s ease;
+            }
+            .navbar .btn-primary:hover {
+                transform: translateY(-2px);
+                filter: brightness(1.03);
+            }
+
+            /* Logo always visible */
+            .navbar .brand-logo { display: inline-block; height: auto; }
         </style>
     </head>
 
@@ -57,11 +101,64 @@
                 <div class="loader-fill"></div>
             </div>
         </div>
+                @php
+                        $announcements = \App\Models\Pengumuman::where('is_active', 1)
+                                ->where(function($q){
+                                        $q->whereNull('starts_at')->orWhere('starts_at','<=', now());
+                                })
+                                ->where(function($q){
+                                        $q->whereNull('ends_at')->orWhere('ends_at','>=', now());
+                                })
+                                ->orderBy('tanggal_post','desc')
+                                ->get();
+                @endphp
 
-        <nav class="navbar navbar-expand-md navbar-dark top-nav-collapse default py-0">
+                @if($announcements->count() > 0)
+                <!-- Announcements Modal -->
+                <div class="modal fade" id="announcementsModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Pengumuman</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="announcementsCarousel" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        @foreach($announcements as $i => $a)
+                                        <div class="carousel-item {{ $i==0 ? 'active' : '' }}">
+                                            <h4>{{ $a->judul }}</h4>
+                                            <p class="text-muted">{{ \Carbon\Carbon::parse($a->tanggal_post)->format('d M Y') }}</p>
+                                            <div class="mt-3">{!! nl2br(e($a->isi)) !!}</div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#announcementsCarousel" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#announcementsCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                        document.addEventListener('DOMContentLoaded', function(){
+                                var modal = new bootstrap.Modal(document.getElementById('announcementsModal'));
+                                modal.show();
+                        });
+                </script>
+                @endif
+
+        <nav class="navbar navbar-expand-md navbar-dark default py-0">
             <div class="container">
-                <a class="navbar-brand" href="/">
-                    <img width="70" src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo">
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <img class="brand-logo" width="70" src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo antrek">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
@@ -222,25 +319,19 @@
         <script src="https://cdn.jsdelivr.net/jquery.marquee/1.4.0/jquery.marquee.min.js"></script>
         <script>
             // Start [ Menu hide/show on scroll ]
-            let ost = 0;
+            // Use a fixed threshold to toggle navbar state deterministically
             document.addEventListener('scroll', function() {
-                let cOst = document.documentElement.scrollTop;
-                if (cOst == 0) {
-                    document.querySelector(".navbar").classList.add("top-nav-collapse");
-                } else if (cOst > ost) {
-                    document.querySelector(".navbar").classList.add("top-nav-collapse");
-                    document.querySelector(".navbar").classList.remove("default");
+                var cOst = document.documentElement.scrollTop || document.body.scrollTop;
+                var navbar = document.querySelector('.navbar');
+                var threshold = 60; // px scrolled before header changes
+                if (!navbar) return;
+                if (cOst > threshold) {
+                    navbar.classList.add('top-nav-collapse');
+                    navbar.classList.remove('default');
                 } else {
-                    document.querySelector(".navbar").classList.add("default");
-                    document.querySelector(".navbar").classList.remove("top-nav-collapse");
+                    navbar.classList.add('default');
+                    navbar.classList.remove('top-nav-collapse');
                 }
-
-                // if (cOst > 500) {
-                //     document.querySelector(".pc-landing-custmizer").classList.add("active");
-                // } else {
-                //     document.querySelector(".pc-landing-custmizer").classList.remove("active");
-                // }
-                ost = cOst;
             });
             // End [ Menu hide/show on scroll ]
             var wow = new WOW({

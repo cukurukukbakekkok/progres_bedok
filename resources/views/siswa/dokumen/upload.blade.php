@@ -626,7 +626,7 @@
                     <div class="empty-state-icon">📋</div>
                     <h3>Belum Ada Data Pendaftaran</h3>
                     <p>Anda harus melakukan pendaftaran terlebih dahulu sebelum mengupload dokumen.</p>
-                    <a href="{{ route('siswa.pendaftaran') }}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; margin-top: 15px;">
+                    <a href="{{ route('siswa.pendaftaran.create') }}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; margin-top: 15px;">
                         Lakukan Pendaftaran
                     </a>
                 </div>

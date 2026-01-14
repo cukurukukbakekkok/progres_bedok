@@ -6,24 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('calon_siswas', function (Blueprint $table) {
-            $table->foreignId('id_gelombang')->nullable()->constrained('gelombang_pendaftarans')->onDelete('set null');
+            // Make nama_orang_tua nullable since it's not collected in form
+            $table->string('nama_orang_tua')->nullable()->change();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('calon_siswas', function (Blueprint $table) {
-            $table->dropForeignKey(['id_gelombang_foreign']);
-            $table->dropColumn('id_gelombang');
+            $table->string('nama_orang_tua')->nullable(false)->change();
         });
     }
 };

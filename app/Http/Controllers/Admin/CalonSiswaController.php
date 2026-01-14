@@ -10,7 +10,8 @@ class CalonSiswaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = CalonSiswa::query();
+        // eager-load kelas to avoid N+1 when views access $siswa->kelas
+        $query = CalonSiswa::with('kelas');
         
         // Search by kode_pendaftaran or nama_lengkap
         if ($request->has('search') && $request->search) {
@@ -26,7 +27,8 @@ class CalonSiswaController extends Controller
 
     public function show($id)
     {
-        $siswa = CalonSiswa::findOrFail($id);
+        // include kelas relationship for detail view
+        $siswa = CalonSiswa::with('kelas')->findOrFail($id);
         return view('admin.calon_siswa.show', compact('siswa'));
     }
 
@@ -37,7 +39,7 @@ class CalonSiswaController extends Controller
         $siswa->status_pembayaran = 'Lunas';
         $siswa->save();
 
-        return back()->with('success', 'Pembayaran berhasil diverifikasi.');
+        return back()->with('success', '✔ Pembayaran berhasil diverifikasi.');
     }
 
     // ✔ Validasi berkas
@@ -49,37 +51,42 @@ class CalonSiswaController extends Controller
         $siswa->status_berkas = 'Valid';
         $siswa->save();
 
-        return back()->with('success', 'Berkas berhasil divalidasi.');
+        return back()->with('success', '✔ Berkas berhasil divalidasi.');
     }
 
     // ✔ Tolak kelulusan
     public function tolak($id)
-{
-    $siswa = CalonSiswa::findOrFail($id);
-    $siswa->status_kelulusan = 'Tidak Lolos';
-    $siswa->save();
+    {
+        $siswa = CalonSiswa::findOrFail($id);
+        $siswa->status_kelulusan = 'Tidak Lolos';
+        $siswa->save();
 
-    return redirect()->route('admin.calon_siswa.show', $id)
-        ->with('success', 'Siswa telah dinyatakan TIDAK LOLOS.');
-}
+        return back()->with('success', '❌ Siswa telah dinyatakan TIDAK LOLOS.');
+    }
 
     // ✔ Setujui kelulusan
     public function setujui($id)
-{
-    $siswa = CalonSiswa::findOrFail($id);
-    $siswa->status_kelulusan = 'Lolos';
-    $siswa->save();
+    {
+        $siswa = CalonSiswa::findOrFail($id);
+        $siswa->status_kelulusan = 'Lolos';
+        $siswa->save();
 
-    return redirect()->route('admin.calon_siswa.show', $id)
-        ->with('success', 'Siswa telah dinyatakan LOLOS.');
-}
+        return back()->with('success', '🏆 Siswa telah dinyatakan LOLOS.');
+    }
 
 
     // ✔ Hapus data calon siswa
     public function destroy($id)
     {
-        $data = CalonSiswa::findOrFail($id);
+        $data = CalonSiswa::with('kelas')->findOrFail($id);
 
+        // Decrease kelas count (restore kelas capacity)
+        if ($data->kelas_id) {
+            \App\Models\Kelas::where('id', $data->kelas_id)->decrement('jumlah_siswa');
+            \Log::info('Kelas count decremented for kelas_id: ' . $data->kelas_id);
+        }
+
+        // Delete files
         if ($data->foto && file_exists(public_path('uploads/foto/' . $data->foto))) {
             unlink(public_path('uploads/foto/' . $data->foto));
         }
@@ -88,6 +95,7 @@ class CalonSiswaController extends Controller
         }
 
         $data->delete();
+        \Log::info('Siswa deleted: ' . $data->nama_lengkap);
 
         return redirect()->route('admin.calon_siswa.index')
             ->with('success', 'Data calon siswa berhasil dihapus.');

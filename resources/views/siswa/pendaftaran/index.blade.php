@@ -12,25 +12,27 @@
     @endif
 
     <table class="table table-bordered table-striped">
-        <thead>
+                <thead>
             <tr>
                 <th>No</th>
                 <th>Nama Lengkap</th>
                 <th>NISN</th>
                 <th>Asal Sekolah</th>
                 <th>No HP</th>
+                <th>Jurusan / Kelas</th>
                 <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($data as $siswa)
+                @forelse ($data as $siswa)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $siswa->nama_lengkap }}</td>
                     <td>{{ $siswa->nisn }}</td>
                     <td>{{ $siswa->asal_sekolah }}</td>
                     <td>{{ $siswa->no_hp }}</td>
-                    <td>
+                        <td>{{ $siswa->jurusan }} / {{ $siswa->kelas->nama ?? '-' }}</td>
+                        <td>
                         <a href="{{ route('admin.calon_siswa.edit', $siswa->id) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('admin.calon_siswa.destroy', $siswa->id) }}" method="POST" class="d-inline"
                               onsubmit="return confirm('Yakin hapus data ini?')">

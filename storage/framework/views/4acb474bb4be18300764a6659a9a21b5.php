@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title')</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <title><?php echo $__env->yieldContent('title'); ?></title>
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/style.css')); ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/fonts/tabler-icons.min.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/tabler-icons.min.css')); ?>">
     <style>
         * {
             margin: 0;
@@ -84,31 +84,32 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid px-3 px-lg-5">
             <a class="navbar-brand" href="/">
-                <img src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo">
+                <img src="<?php echo e(asset('assets/images/my/logo-antrek.png')); ?>" alt="logo">
                 <span>PPDB Online</span>
             </a>
             <div class="d-flex align-items-center ms-auto gap-3">
-                <span class="navbar-user d-none d-md-inline">Halo, {{ Auth::user()->name ?? 'User' }}</span>
-                <a href="{{ route('logout') }}" class="btn btn-logout btn-sm fw-600" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <span class="navbar-user d-none d-md-inline">Halo, <?php echo e(Auth::user()->name ?? 'User'); ?></span>
+                <a href="<?php echo e(route('logout')); ?>" class="btn btn-logout btn-sm fw-600" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="ti ti-logout"></i> Logout
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
+                <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
+                    <?php echo csrf_field(); ?>
                 </form>
             </div>
         </div>
     </nav>
 
-    @if (strpos(request()->path(), 'siswa/') !== false)
+    <?php if(strpos(request()->path(), 'siswa/') !== false): ?>
         <!-- Full width untuk halaman siswa (pendaftaran, biodata, dokumen, pembayaran) -->
-        @yield('content')
-    @else
+        <?php echo $__env->yieldContent('content'); ?>
+    <?php else: ?>
         <!-- Container untuk halaman lainnya -->
         <div class="container py-4">
-            @yield('content')
+            <?php echo $__env->yieldContent('content'); ?>
         </div>
-    @endif
+    <?php endif; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<?php /**PATH C:\Users\PC_\UKK_BEDOK_PPDB2\resources\views/layouts/main.blade.php ENDPATH**/ ?>

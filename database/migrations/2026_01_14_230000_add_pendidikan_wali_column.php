@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('calon_siswas', function (Blueprint $table) {
-            $table->foreignId('id_gelombang')->nullable()->constrained('gelombang_pendaftarans')->onDelete('set null');
+            // Add pendidikan_wali if it doesn't exist
+            if (!Schema::hasColumn('calon_siswas', 'pendidikan_wali')) {
+                $table->string('pendidikan_wali')->nullable()->after('tanggal_lahir_wali');
+            }
         });
     }
 
@@ -22,8 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('calon_siswas', function (Blueprint $table) {
-            $table->dropForeignKey(['id_gelombang_foreign']);
-            $table->dropColumn('id_gelombang');
+            if (Schema::hasColumn('calon_siswas', 'pendidikan_wali')) {
+                $table->dropColumn('pendidikan_wali');
+            }
         });
     }
 };

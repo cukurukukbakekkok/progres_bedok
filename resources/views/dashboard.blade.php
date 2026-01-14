@@ -328,7 +328,7 @@
         </div>
 
         <div class="action-buttons">
-            <a href="{{ route('siswa.pendaftaran') }}" class="action-btn" title="Isi formulir pendaftaran">
+            <a href="{{ route('siswa.pendaftaran.create') }}" class="action-btn" title="Isi formulir pendaftaran">
                 <div class="icon">📝</div>
                 <div>Daftar Sekarang</div>
             </a>

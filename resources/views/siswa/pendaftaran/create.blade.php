@@ -11,6 +11,10 @@
         box-sizing: border-box;
     }
 
+    html, body {
+        height: 100%;
+    }
+
     body {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
@@ -18,7 +22,7 @@
     }
 
     .registration-wrapper {
-        min-height: 100vh;
+        min-height: calc(100vh - 70px);
         padding: 40px 20px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }

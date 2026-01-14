@@ -33,12 +33,43 @@
         <!-- [Template CSS Files] -->
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
         <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/landing-modern.css') }}">
+
+        <style>
+            :root {
+                --bs-body-bg: transparent !important;
+            }
+
+            body, body.auth-page {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                min-height: 100vh !important;
+                background-attachment: fixed !important;
+            }
+
+            .auth-page-wrapper {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .auth-page-container {
+                width: 100%;
+                max-width: 500px;
+                padding: 20px;
+            }
+        </style>
 
     </head>
     <!-- [Head] end -->
     <!-- [Body] Start -->
 
-    <body>
+    <body style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; min-height: 100vh; margin: 0; padding: 0; position: relative; overflow-x: hidden;">
+        <!-- Animated Background Shapes -->
+        <div style="position: fixed; top: -100px; right: -100px; width: 400px; height: 400px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; animation: float 8s ease-in-out infinite; pointer-events: none; z-index: 0;"></div>
+        <div style="position: fixed; bottom: -100px; left: -100px; width: 350px; height: 350px; background: rgba(255, 235, 59, 0.1); border-radius: 50%; animation: float 10s ease-in-out infinite 2s; pointer-events: none; z-index: 0;"></div>
+        <div style="position: fixed; top: 50%; right: 10%; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; animation: float 12s ease-in-out infinite 1s; pointer-events: none; z-index: 0;"></div>
+
         <!-- [ Pre-loader ] start -->
         <div class="loader-bg">
             <div class="loader-track">
@@ -47,35 +78,9 @@
         </div>
         <!-- [ Pre-loader ] End -->
 
-        <div class="auth-main">
-            <div class="auth-wrapper v3">
-                <!-- gunakan background yang sama seperti halaman welcome -->
-                <div class="auth-form"
-                    style="background-image: url({{ asset('assets/images/my/antartika-img.jpeg') }}); background-size: cover; background-position: center;">
-                    <div class="auth-header">
-                        <a class="navbar-brand" href="/">
-                            <!-- ganti logo sesuai landing -->
-                            <img width="100" src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo">
-                        </a>
-                    </div>
-
-                    @yield('content')
-
-                    <div class="auth-footer row">
-                        <!-- <div class=""> -->
-                        <div class="col my-1">
-                            <p class="m-0">Copyright © <a href="#">Codedthemes</a></p>
-                        </div>
-                        <div class="col-auto my-1">
-                            <ul class="list-inline footer-link mb-0">
-                                <li class="list-inline-item"><a href="#">Home</a></li>
-                                <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-                                <li class="list-inline-item"><a href="#">Contact us</a></li>
-                            </ul>
-                        </div>
-                        <!-- </div> -->
-                    </div>
-                </div>
+        <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; width: 100%; padding: 20px 0; position: relative; z-index: 1; background: transparent !important;">
+            <div style="width: 100%; padding: 0 15px; background: transparent !important;">
+                @yield('content')
             </div>
         </div>
         <!-- [ Main Content ] end -->

@@ -27,8 +27,9 @@ class PengumumanController extends Controller
             'isi' => 'required',
             'tanggal_post' => 'required',
         ]);
-
-        Pengumuman::create($request->all());
+        $data = $request->only(['judul','isi','tanggal_post','starts_at','ends_at']);
+        $data['is_active'] = $request->has('is_active');
+        Pengumuman::create($data);
         return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil ditambahkan');
     }
 
@@ -45,9 +46,10 @@ class PengumumanController extends Controller
             'isi' => 'required',
             'tanggal_post' => 'required',
         ]);
-
         $pengumuman = Pengumuman::findOrFail($id);
-        $pengumuman->update($request->all());
+        $data = $request->only(['judul','isi','tanggal_post','starts_at','ends_at']);
+        $data['is_active'] = $request->has('is_active');
+        $pengumuman->update($data);
         return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil diperbarui');
     }
 
@@ -56,5 +58,37 @@ class PengumumanController extends Controller
         $pengumuman = Pengumuman::findOrFail($id);
         $pengumuman->delete();
         return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil dihapus');
+    }
+
+    // Public methods for siswa viewing
+    public function publicIndex()
+    {
+        $pengumuman = Pengumuman::where('is_active', 1)
+            ->where(function ($query) {
+                $query->whereNull('starts_at')
+                      ->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('ends_at')
+                      ->orWhere('ends_at', '>=', now());
+            })
+            ->latest('tanggal_post')
+            ->paginate(10);
+        return view('pengumuman.index', compact('pengumuman'));
+    }
+
+    public function publicShow($id)
+    {
+        $pengumuman = Pengumuman::where('is_active', 1)
+            ->where(function ($query) {
+                $query->whereNull('starts_at')
+                      ->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('ends_at')
+                      ->orWhere('ends_at', '>=', now());
+            })
+            ->findOrFail($id);
+        return view('pengumuman.show', compact('pengumuman'));
     }
 }

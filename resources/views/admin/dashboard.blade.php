@@ -6,8 +6,28 @@
     <title>Dashboard PPDB</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
-        body { background: #eef2f7; }
-        .navbar { border-bottom: 4px solid rgba(255,255,255,.25); }
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .dashboard-wrapper {
+            padding: 30px 0;
+            min-height: 100vh;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .navbar { 
+            border-bottom: 4px solid rgba(255,255,255,.25); 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
 
         .card {
             border-radius: 16px;
@@ -49,7 +69,7 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">PPDB SMK ANTARTIKA 1 SDA</a>
             <div class="d-flex align-items-center gap-3">
@@ -63,9 +83,10 @@
     </nav>
 
     <!-- Content -->
-    <div class="container mt-5">
+    <div class="dashboard-wrapper">
+    <div class="dashboard-container">
 
-        <h2 class="mb-4 fw-bold text-secondary">📊 Dashboard Utama</h2>
+        <h2 class="mb-4 fw-bold text-white">📊 Dashboard Utama</h2>
 
         <div class="row g-4 mb-5">
 
@@ -103,6 +124,9 @@
             <a href="{{ route('admin.gelombang.index') }}" class="btn btn-modern" style="background: linear-gradient(135deg, #ff7a00, #ffc857); color: #fff;">
                 📆 Gelombang
             </a>
+            <a href="{{ route('admin.jurusan.index') }}" class="btn btn-modern" style="background: linear-gradient(135deg, #6f42c1, #9f7aea); color: #fff;">
+                🏫 Jurusan & Kelas
+            </a>
             <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-modern btn-pengumuman">
                 📢 Kelola Pengumuman
             </a>
@@ -124,6 +148,7 @@
         </div>
         @endif
 
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

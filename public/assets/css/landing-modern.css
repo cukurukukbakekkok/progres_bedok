@@ -1,0 +1,323 @@
+/* Modern Landing Page Animations and Styles */
+
+/* Floating Animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+}
+
+@keyframes float-reverse {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(20px) rotate(-5deg);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+    }
+    50% {
+        box-shadow: 0 10px 35px rgba(102, 126, 234, 0.2);
+    }
+}
+
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Header Background Floating Elements */
+header [style*="float"] {
+    animation: float 6s ease-in-out infinite !important;
+}
+
+/* Card Hover Effects */
+.card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2) !important;
+}
+
+/* Badge Styling */
+.badge-soft-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    animation: slideInUp 0.8s ease forwards;
+}
+
+.badge-soft-warning {
+    background: rgba(255, 235, 59, 0.2);
+    border: 1px solid rgba(255, 235, 59, 0.5);
+    color: #ffeb3b;
+}
+
+/* Gradient Text */
+.bg-gradient-primary {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* CTA Section */
+.cta-block {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Button Styles */
+.btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.btn-light {
+    transition: all 0.3s ease;
+    background: white;
+    color: #667eea;
+    font-weight: 600;
+}
+
+.btn-light:hover {
+    background: #f8f9ff;
+    color: #667eea;
+    transform: translateY(-2px);
+}
+
+.btn-outline-light {
+    color: white;
+    border-color: rgba(255, 255, 255, 0.5);
+    border-width: 2px;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+    color: white;
+}
+
+/* Text Styles */
+h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.lead {
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+/* Section Spacing */
+section {
+    padding: 80px 0;
+}
+
+section.py-5 {
+    padding: 60px 0 !important;
+}
+
+section.pt-0 {
+    padding-top: 0 !important;
+}
+
+section.bg-light {
+    background: #f8f9fa;
+}
+
+/* Gap Utilities */
+.g-4 > * {
+    padding: 15px;
+}
+
+/* Image Styles */
+img.rounded-circle {
+    border: 3px solid #f0f0f0;
+}
+
+/* Star Ratings */
+.star {
+    display: flex;
+    gap: 5px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem !important;
+    }
+    
+    h2 {
+        font-size: 1.8rem !important;
+    }
+    
+    section {
+        padding: 50px 0;
+    }
+    
+    .card {
+        margin-bottom: 20px;
+    }
+    
+    .btn-lg {
+        padding: 12px 30px !important;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .bg-light {
+        background: #1a1a2e !important;
+    }
+    
+    .card {
+        background: #16213e !important;
+        border-color: #0f3460 !important;
+    }
+    
+    .text-muted {
+        color: #a0aec0 !important;
+    }
+}
+
+/* Smooth Transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* WOW Animation Integration */
+.wow {
+    visibility: hidden;
+}
+
+.wow.fadeInUp {
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.wow.fadeInDown {
+    animation: slideInDown 0.8s ease forwards;
+}
+
+.wow.fadeInRight {
+    animation: slideInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Additional Enhancements */
+.min-vh-100 {
+    min-height: 100vh;
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+.opacity-85 {
+    opacity: 0.85;
+}
+
+.opacity-90 {
+    opacity: 0.9;
+}
+
+.f-w-700 {
+    font-weight: 700;
+}
+
+.f-w-600 {
+    font-weight: 600;
+}
+
+.f-w-500 {
+    font-weight: 500;
+}
+
+.fw-700 {
+    font-weight: 700;
+}
+
+.fw-600 {
+    font-weight: 600;
+}
+
+.fw-500 {
+    font-weight: 500;
+}
+
+/* Gap utilities */
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.gap-3 {
+    gap: 0.75rem;
+}
+
+.gap-4 {
+    gap: 1rem;
+}

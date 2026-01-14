@@ -5,31 +5,42 @@
 
 @section('content')
     <!-- [ Header ] start -->
-    <header id="home" class="d-flex align-items-center"
-        style="position: relative; min-height: 100dvh; background: url('{{ asset('assets/images/my/antartika-img.jpeg') }}') no-repeat center center; background-size: cover;">
-        <!-- Overlay -->
-        <div
-            style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0,0,0,0.1));">
-        </div>
+    <header id="home" class="d-flex align-items-center position-relative"
+        style="min-height: 100dvh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        
+        <!-- Animated Background Elements -->
+        <div style="position: absolute; width: 400px; height: 400px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; top: -100px; right: -100px; animation: float 6s ease-in-out infinite; pointer-events: none;"></div>
+        <div style="position: absolute; width: 300px; height: 300px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; bottom: -50px; left: -50px; animation: float 8s ease-in-out infinite 1s; pointer-events: none;"></div>
 
-        <div class="container mt-5 pt-5">
-            <div class="row justify-content-center">
+        <div class="container mt-5 pt-5 position-relative" style="z-index: 10;">
+            <div class="row justify-content-center align-items-center min-vh-100">
                 <div class="col-lg-10 col-xl-8 text-center">
-                    <h1 class="mt-sm-3 text-white mb-4 f-w-600 wow fadeInUp" data-wow-delay="0.2s" style="font-size: 3.5rem;">
-                        Selamat Datang di PPDB Online
-                        <br>
-                        <span class="text-primary">Sekolah Harapan Bangsa</span>
-                    </h1>
-                    <h5 class="mb-4 text-white opacity-75 wow fadeInUp" data-wow-delay="0.4s" style="font-size: 1.25rem;">
-                        Wujudkan Masa Depan Gemilang Melalui Pendidikan Berkualitas.
-                        <br class="d-none d-md-block">
-                        Daftar dengan mudah dan cepat melalui sistem pendaftaran siswa baru kami.
-                    </h5>
-                    <div class="my-5 wow fadeInUp" data-wow-delay="0.6s">
+                    <div class="wow fadeInUp" data-wow-delay="0.1s" style="animation-duration: 0.8s;">
+                        <h1 class="text-white mb-3 f-w-700" style="font-size: clamp(2rem, 8vw, 4rem); line-height: 1.2; letter-spacing: -1px;">
+                            Selamat Datang di<br>
+                            <span class="bg-gradient-primary text-transparent d-inline-block" style="background: linear-gradient(90deg, #fff 0%, #ffeb3b 100%); -webkit-background-clip: text;">PPDB Online</span>
+                        </h1>
+                    </div>
+                    
+                    <div class="wow fadeInUp" data-wow-delay="0.2s" style="animation-duration: 0.8s;">
+                        <h3 class="text-white opacity-90 mb-5 fw-500" style="font-size: 1.3rem; letter-spacing: 0.5px;">
+                            <span class="badge badge-soft-warning" style="background: rgba(255, 235, 59, 0.2); border: 1px solid rgba(255, 235, 59, 0.5); color: #ffeb3b;">Sekolah Harapan Bangsa</span>
+                        </h3>
+                        <p class="text-white opacity-75 lead mb-4" style="max-width: 600px; margin-left: auto; margin-right: auto; font-size: 1.1rem; font-weight: 300;">
+                            Wujudkan masa depan gemilang melalui pendidikan berkualitas. Daftar dengan mudah dan cepat melalui sistem pendaftaran siswa baru kami yang modern dan aman.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-5 wow fadeInUp" data-wow-delay="0.3s" style="animation-duration: 0.8s; position: relative; z-index: 10;">
                         <a href="{{ route('register') }}"
-                            class="btn btn-primary btn-lg d-inline-flex align-items-center me-2" target="_blank">Daftar
-                            Sekarang <i class="ti ti-arrow-right ms-2"></i></a>
-                        <a href="#alur" class="btn btn-outline-light btn-lg me-2">Lihat Alur Pendaftaran</a>
+                            class="btn btn-light btn-lg d-inline-flex align-items-center gap-2 me-3 fw-600 shadow-lg"
+                            style="padding: 14px 40px; border-radius: 50px; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2); cursor: pointer; z-index: 20; position: relative; pointer-events: auto;">
+                            <i class="ti ti-user-plus"></i> Daftar Sekarang
+                        </a>
+                        <a href="#alur" class="btn btn-outline-light btn-lg fw-600"
+                            style="padding: 14px 40px; border-radius: 50px; border-width: 2px; transition: all 0.3s ease; cursor: pointer; z-index: 20; position: relative; pointer-events: auto;">
+                            <i class="ti ti-arrow-down"></i> Lihat Alur
+                        </a>
                     </div>
                 </div>
             </div>
@@ -37,51 +48,111 @@
     </header>
     <!-- [ Header ] End -->
 
-    <!-- [ Keunggulan Kami ] start -->
-    <section>
-        <div class="container title">
-            <div class="row justify-content-center text-center wow fadeInUp" data-wow-delay="0.2s">
+    <!-- [ Pengumuman ] Start -->
+    <section class="py-5" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);">
+        <div class="container">
+            <div class="row justify-content-center text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="col-md-10 col-xl-6">
-                    <h5 class="text-primary mb-0">Pendidikan Terbaik</h5>
-                    <h2 class="my-3">Mengapa Memilih Sekolah Kami?</h2>
-                    <p class="mb-0">Kami berkomitmen untuk menyediakan lingkungan belajar yang inspiratif dengan kurikulum
-                        terbaik untuk masa depan cerah putra-putri Anda.</p>
+                    <span class="badge badge-soft-primary mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 16px; border-radius: 20px;">📢 Pengumuman Terbaru</span>
+                    <h2 class="mb-3 fw-700" style="font-size: 2.5rem;">Informasi<br><span class="bg-gradient-primary text-transparent d-inline-block" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text;">dari Sekolah</span></h2>
+                    <p class="text-muted lead">Pantau perkembangan terbaru dan pengumuman penting dari sekolah kami.</p>
                 </div>
             </div>
+            
+            <div class="row g-4">
+                @forelse($pengumuman as $item)
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="{{ $loop->index * 0.1 + 0.2 }}s">
+                    <div class="card border-0 h-100" 
+                        style="border-radius: 15px; background: white; overflow: hidden; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1); cursor: pointer;"
+                        onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.2)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(102, 126, 234, 0.1)'">
+                        <div style="height: 8px; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"></div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="badge badge-soft-primary" style="background: rgba(102, 126, 234, 0.15); color: #667eea; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">{{ $item->tanggal_post->format('d M Y') }}</span>
+                            </div>
+                            <h5 class="fw-600 mb-2 text-dark" style="min-height: 50px; line-height: 1.4;">{{ $item->judul }}</h5>
+                            <p class="text-muted small mb-4" style="min-height: 60px; line-height: 1.5;">{{ Str::limit($item->isi, 100, '...') }}</p>
+                            <a href="{{ route('pengumuman.public.show', $item->id) }}" class="btn btn-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; padding: 8px 16px; text-decoration: none; transition: all 0.3s ease; display: inline-block;">
+                                Baca Selengkapnya →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="col-12 text-center">
+                    <p class="text-muted fs-5" style="padding: 40px 0;">📭 Belum ada pengumuman untuk ditampilkan saat ini</p>
+                </div>
+                @endforelse
+            </div>
+            
+            @if($pengumuman->count() > 0)
+            <div class="text-center mt-5 wow fadeInUp" data-wow-delay="0.5s">
+                <a href="{{ route('pengumuman.public.index') }}" class="btn btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50px; padding: 14px 40px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; display: inline-block;">
+                    Lihat Semua Pengumuman →
+                </a>
+            </div>
+            @endif
         </div>
+    </section>
+    <!-- [ Pengumuman ] End -->
+
+    <!-- [ Keunggulan Kami ] start -->
+    <section class="py-5">
         <div class="container">
-            <div class="row align-items-center justify-content-center">
+            <div class="row justify-content-center text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="col-md-10 col-xl-6">
+                    <span class="badge badge-soft-primary mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 16px; border-radius: 20px;">Keunggulan Kami</span>
+                    <h2 class="mb-3 fw-700" style="font-size: 2.5rem;">Mengapa Memilih<br><span class="bg-gradient-primary text-transparent d-inline-block" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text;">Sekolah Kami?</span></h2>
+                    <p class="text-muted lead">Kami berkomitmen untuk menyediakan lingkungan belajar yang inspiratif dengan kurikulum terbaik untuk masa depan cerah putra-putri Anda.</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Card 1 -->
                 <div class="col-sm-6 col-lg-4">
-                    <div class="card wow fadeInUp" data-wow-delay="0.4s">
-                        <div class="card-body">
-                            <img src="../assets/images/landing/img-feature1.svg"
-                                alt="Ruang kelas modern dengan proyektor dan kursi ergonomis" class="img-fluid">
-                            <h5 class="my-3">Fasilitas Modern</h5>
-                            <p class="mb-0 text-muted">Lingkungan belajar nyaman dengan fasilitas terkini, dari lab,
-                                perpustakaan, hingga sarana olahraga lengkap.</p>
+                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.2s"
+                        style="border-radius: 15px; background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); overflow: hidden; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1); cursor: pointer;"
+                        onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.2)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(102, 126, 234, 0.1)'">
+                        <div class="card-body text-center">
+                            <div style="width: 70px; height: 70px; margin: 0 auto 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="ti ti-building-community f-36 text-white"></i>
+                            </div>
+                            <h5 class="mb-2 fw-600">Fasilitas Modern</h5>
+                            <p class="mb-0 text-muted small">Lingkungan belajar nyaman dengan fasilitas terkini, dari lab, perpustakaan, hingga sarana olahraga lengkap.</p>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Card 2 -->
                 <div class="col-sm-6 col-lg-4">
-                    <div class="card wow fadeInUp" data-wow-delay="0.6s">
-                        <div class="card-body">
-                            <img src="../assets/images/landing/img-feature2.svg"
-                                alt="Guru sedang mengajar di depan kelas menggunakan papan tulis interaktif"
-                                class="img-fluid">
-                            <h5 class="my-3">Kurikulum Unggulan</h5>
-                            <p class="mb-0 text-muted">Kurikulum dirancang untuk mengembangkan potensi akademik dan
-                                non-akademik siswa secara seimbang.</p>
+                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.3s"
+                        style="border-radius: 15px; background: linear-gradient(135deg, #f64ba815 0%, #f64ba815 100%); overflow: hidden; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(246, 75, 168, 0.1); cursor: pointer;"
+                        onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 40px rgba(246, 75, 168, 0.2)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(246, 75, 168, 0.1)'">
+                        <div class="card-body text-center">
+                            <div style="width: 70px; height: 70px; margin: 0 auto 20px; background: linear-gradient(135deg, #f64ba8 0%, #f64ba8 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="ti ti-book f-36 text-white"></i>
+                            </div>
+                            <h5 class="mb-2 fw-600">Kurikulum Unggulan</h5>
+                            <p class="mb-0 text-muted small">Kurikulum dirancang untuk mengembangkan potensi akademik dan non-akademik siswa secara seimbang.</p>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Card 3 -->
                 <div class="col-sm-6 col-lg-4">
-                    <div class="card wow fadeInUp" data-wow-delay="0.8s">
-                        <div class="card-body">
-                            <img src="../assets/images/landing/img-feature3.svg"
-                                alt="Sekelompok guru yang ramah dan profesional berdiskusi di ruang guru" class="img-fluid">
-                            <h5 class="my-3">Pendidik Profesional</h5>
-                            <p class="mb-0 text-muted">Didukung oleh guru berpengalaman dan berdedikasi dalam membimbing
-                                siswa menjadi pribadi cerdas dan berkarakter.</p>
+                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.4s"
+                        style="border-radius: 15px; background: linear-gradient(135deg, #ffa50015 0%, #ffa50015 100%); overflow: hidden; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(255, 165, 0, 0.1); cursor: pointer;"
+                        onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 40px rgba(255, 165, 0, 0.2)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(255, 165, 0, 0.1)'">
+                        <div class="card-body text-center">
+                            <div style="width: 70px; height: 70px; margin: 0 auto 20px; background: linear-gradient(135deg, #ffa500 0%, #ffa500 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="ti ti-users f-36 text-white"></i>
+                            </div>
+                            <h5 class="mb-2 fw-600">Pendidik Profesional</h5>
+                            <p class="mb-0 text-muted small">Didukung oleh guru berpengalaman dan berdedikasi dalam membimbing siswa menjadi pribadi cerdas dan berkarakter.</p>
                         </div>
                     </div>
                 </div>
@@ -91,56 +162,85 @@
     <!-- [ Keunggulan Kami ] End -->
 
     <!-- [ Alur Pendaftaran ] start -->
-    <section class="pt-0" id="alur">
-        <div class="container title">
-            <div class="row justify-content-center text-center wow fadeInUp" data-wow-delay="0.2s">
+    <section class="py-5 bg-light" id="alur">
+        <div class="container">
+            <div class="row justify-content-center text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="col-md-10 col-xl-6">
-                    <h5 class="text-primary mb-0">Proses Cepat & Mudah</h5>
-                    <h2 class="my-3">Alur Pendaftaran</h2>
-                    <p class="mb-0">Ikuti 4 langkah mudah untuk menjadi bagian dari keluarga besar Sekolah Harapan Bangsa.
-                    </p>
+                    <span class="badge badge-soft-primary mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 16px; border-radius: 20px;">Proses Cepat</span>
+                    <h2 class="mb-3 fw-700" style="font-size: 2.5rem;">Alur<br><span class="bg-gradient-primary text-transparent d-inline-block" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text;">Pendaftaran</span></h2>
+                    <p class="text-muted lead">Ikuti 4 langkah mudah untuk menjadi bagian dari keluarga besar Sekolah Harapan Bangsa.</p>
                 </div>
             </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-center justify-content-center">
+            
+            <div class="row g-4">
+                <!-- Step 1 -->
                 <div class="col-sm-6 col-lg-3">
-                    <div class="card wow fadeInUp" data-wow-delay="0.4s">
-                        <div class="card-body text-center">
-                            <i class="ti ti-user-plus f-36 text-primary"></i>
-                            <h5 class="my-3">1. Buat Akun</h5>
-                            <p class="mb-0 text-muted">Daftarkan diri Anda dengan mengisi email dan password untuk membuat
-                                akun.</p>
+                    <div class="position-relative wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="card border-0 h-100"
+                            style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
+                            onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
+                            <div class="card-body text-center p-4">
+                                <div style="width: 60px; height: 60px; margin: 0 auto 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+                                    1
+                                </div>
+                                <h5 class="mb-2 fw-600">Buat Akun</h5>
+                                <p class="mb-0 text-muted small">Daftarkan diri Anda dengan mengisi email dan password untuk membuat akun.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Step 2 -->
                 <div class="col-sm-6 col-lg-3">
-                    <div class="card wow fadeInUp" data-wow-delay="0.6s">
-                        <div class="card-body text-center">
-                            <i class="ti ti-file-text f-36 text-primary"></i>
-                            <h5 class="my-3">2. Lengkapi Data</h5>
-                            <p class="mb-0 text-muted">Login dan lengkapi formulir biodata serta unggah dokumen yang
-                                diperlukan.</p>
+                    <div class="position-relative wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="card border-0 h-100"
+                            style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
+                            onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
+                            <div class="card-body text-center p-4">
+                                <div style="width: 60px; height: 60px; margin: 0 auto 20px; background: linear-gradient(135deg, #f64ba8 0%, #f64ba8 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+                                    2
+                                </div>
+                                <h5 class="mb-2 fw-600">Lengkapi Data</h5>
+                                <p class="mb-0 text-muted small">Login dan lengkapi formulir biodata serta unggah dokumen yang diperlukan.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Step 3 -->
                 <div class="col-sm-6 col-lg-3">
-                    <div class="card wow fadeInUp" data-wow-delay="0.8s">
-                        <div class="card-body text-center">
-                            <i class="ti ti-search f-36 text-primary"></i>
-                            <h5 class="my-3">3. Proses Seleksi</h5>
-                            <p class="mb-0 text-muted">Tim kami akan melakukan verifikasi dan seleksi terhadap berkas
-                                pendaftaran Anda.</p>
+                    <div class="position-relative wow fadeInUp" data-wow-delay="0.4s">
+                        <div class="card border-0 h-100"
+                            style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
+                            onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
+                            <div class="card-body text-center p-4">
+                                <div style="width: 60px; height: 60px; margin: 0 auto 20px; background: linear-gradient(135deg, #ffa500 0%, #ffa500 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+                                    3
+                                </div>
+                                <h5 class="mb-2 fw-600">Proses Seleksi</h5>
+                                <p class="mb-0 text-muted small">Tim kami akan melakukan verifikasi dan seleksi terhadap berkas pendaftaran Anda.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Step 4 -->
                 <div class="col-sm-6 col-lg-3">
-                    <div class="card wow fadeInUp" data-wow-delay="1.0s">
-                        <div class="card-body text-center">
-                            <i class="ti ti-bell f-36 text-primary"></i>
-                            <h5 class="my-3">4. Pengumuman</h5>
-                            <p class="mb-0 text-muted">Hasil seleksi akan diumumkan secara online melalui akun Anda
-                                masing-masing.</p>
+                    <div class="position-relative wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="card border-0 h-100"
+                            style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
+                            onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
+                            <div class="card-body text-center p-4">
+                                <div style="width: 60px; height: 60px; margin: 0 auto 20px; background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+                                    4
+                                </div>
+                                <h5 class="mb-2 fw-600">Pengumuman</h5>
+                                <p class="mb-0 text-muted small">Hasil seleksi akan diumumkan secara online melalui akun Anda masing-masing.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -150,24 +250,27 @@
     <!-- [ Alur Pendaftaran ] End -->
 
     <!-- [ CTA ] start -->
-    <section class="cta-block"
-        style="position: relative; padding: 120px 0; background: url('{{ asset('assets/images/my/antarika.jpeg') }}') no-repeat center center; background-size: cover; background-attachment: fixed;">
-        <!-- Overlay -->
-        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.6);">
-        </div>
+    <section class="py-5 position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        
+        <!-- Animated shapes -->
+        <div style="position: absolute; width: 300px; height: 300px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; top: -100px; right: -100px;"></div>
+        <div style="position: absolute; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.06); border-radius: 50%; bottom: -50px; left: -50px;"></div>
 
-        <div class="container" style="position: relative; z-index: 2;">
+        <div class="container position-relative" style="z-index: 2;">
             <div class="row justify-content-center">
-                <div class="col-md-8 text-center">
-                    <h2 class="text-white mb-4" style="font-size: 2.8rem; font-weight: 600;">Siap Bergabung dengan <span
-                            class="text-primary">Sekolah Harapan
-                            Bangsa?</span></h2>
-                    <p class="text-white opacity-75 mb-4 lead">Pendaftaran akan segera ditutup. Jangan lewatkan
-                        kesempatan untuk
-                        menjadi siswa berprestasi di sekolah kami. Klik tombol di bawah untuk memulai proses pendaftaran.
+                <div class="col-md-8 text-center wow fadeInUp" data-wow-delay="0.2s">
+                    <h2 class="text-white mb-4 fw-700" style="font-size: 2.5rem;">
+                        Siap Bergabung dengan<br>
+                        <span style="background: linear-gradient(90deg, #fff 0%, #ffeb3b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Sekolah Harapan Bangsa?</span>
+                    </h2>
+                    <p class="text-white opacity-85 mb-5 lead" style="font-size: 1.1rem;">
+                        Pendaftaran akan segera ditutup. Jangan lewatkan kesempatan untuk menjadi siswa berprestasi di sekolah kami. Klik tombol di bawah untuk memulai proses pendaftaran sekarang juga.
                     </p>
-                    <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Daftar Sekarang <i
-                            class="ti ti-arrow-right ms-2"></i></a>
+                    <a href="{{ route('register') }}" class="btn btn-light btn-lg fw-600 px-5 py-3 shadow-lg"
+                        style="border-radius: 50px; transition: all 0.3s ease;">
+                        <i class="ti ti-rocket"></i> Daftar Sekarang
+                    </a>
                 </div>
             </div>
         </div>
@@ -175,49 +278,52 @@
     <!-- [ CTA ] End -->
 
     <!-- [ Statistik ] start -->
-    <section class="bg-white">
+    <section class="py-5 bg-light">
         <div class="container">
-            <div class="row">
+            <div class="row g-4">
                 <div class="col-sm-6 col-lg-4">
-                    <div class="card border-0 wow fadeInUp" data-wow-delay="0.2s">
-                        <div class="card-body">
+                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.2s"
+                        style="border-radius: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); overflow: hidden; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);">
+                        <div class="card-body p-4">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
-                                    <h2 class="m-0 text-primary">1200+</h2>
+                                    <h2 class="m-0 text-white fw-700">1200+</h2>
                                 </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h4 class="mb-2">Total Pendaftar</h4>
-                                    <p class="mb-0">Antusiasme tinggi dari calon siswa baru setiap tahunnya.</p>
+                                <div class="flex-grow-1 ms-4">
+                                    <h5 class="mb-2 text-white fw-600">Total Pendaftar</h5>
+                                    <p class="mb-0 text-white opacity-75 small">Antusiasme tinggi dari calon siswa baru setiap tahunnya.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-4">
-                    <div class="card border-0 wow fadeInUp" data-wow-delay="0.4s">
-                        <div class="card-body">
+                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.3s"
+                        style="border-radius: 15px; background: linear-gradient(135deg, #f64ba8 0%, #f64ba8 100%); overflow: hidden; box-shadow: 0 8px 25px rgba(246, 75, 168, 0.2);">
+                        <div class="card-body p-4">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
-                                    <h2 class="m-0 text-primary">350</h2>
+                                    <h2 class="m-0 text-white fw-700">350</h2>
                                 </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h4 class="mb-2">Kursi Tersedia</h4>
-                                    <p class="mb-0">Kuota terbatas untuk menjaga kualitas proses belajar mengajar.</p>
+                                <div class="flex-grow-1 ms-4">
+                                    <h5 class="mb-2 text-white fw-600">Kursi Tersedia</h5>
+                                    <p class="mb-0 text-white opacity-75 small">Kuota terbatas untuk menjaga kualitas proses belajar mengajar.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-4">
-                    <div class="card border-0 wow fadeInUp" data-wow-delay="0.6s">
-                        <div class="card-body">
+                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.4s"
+                        style="border-radius: 15px; background: linear-gradient(135deg, #ffa500 0%, #ffa500 100%); overflow: hidden; box-shadow: 0 8px 25px rgba(255, 165, 0, 0.2);">
+                        <div class="card-body p-4">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
-                                    <h2 class="m-0 text-primary">3</h2>
+                                    <h2 class="m-0 text-white fw-700">3</h2>
                                 </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h4 class="mb-2">Jurusan Unggulan</h4>
-                                    <p class="mb-0">Pilihan jurusan yang relevan dengan kebutuhan industri saat ini.</p>
+                                <div class="flex-grow-1 ms-4">
+                                    <h5 class="mb-2 text-white fw-600">Jurusan Unggulan</h5>
+                                    <p class="mb-0 text-white opacity-75 small">Pilihan jurusan yang relevan dengan kebutuhan industri saat ini.</p>
                                 </div>
                             </div>
                         </div>
@@ -229,86 +335,95 @@
     <!-- [ Statistik ] End -->
 
     <!-- [ Testimoni ] start -->
-    <section class="pt-0">
-        <div class="container title">
-            <div class="row justify-content-center text-center wow fadeInUp" data-wow-delay="0.2s">
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="col-md-10 col-xl-6">
-                    <h5 class="text-primary mb-0">Testimoni</h5>
-                    <h2 class="my-3">Apa Kata Mereka?</h2>
-                    <p class="mb-0">Kami bangga dapat memberikan dampak positif. Simak pengalaman para alumni dan orang
-                        tua siswa kami.</p>
+                    <span class="badge badge-soft-primary mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 16px; border-radius: 20px;">Testimoni</span>
+                    <h2 class="mb-3 fw-700" style="font-size: 2.5rem;">Apa Kata<br><span class="bg-gradient-primary text-transparent d-inline-block" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text;">Mereka?</span></h2>
+                    <p class="text-muted lead">Kami bangga dapat memberikan dampak positif. Simak pengalaman para alumni dan orang tua siswa kami.</p>
                 </div>
             </div>
-        </div>
-        <div class="container-fluid">
-            <div class="row cust-slider">
+            
+            <div class="row g-4">
+                <!-- Testimoni 1 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card wow fadeInRight" data-wow-delay="0.2s">
-                        <div class="card-body">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <img src="../assets/images/user/avatar-1.jpg"
-                                        alt="Foto close-up alumni pria tersenyum" class="img-fluid wid-40 rounded-circle">
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h5 class="mb-1">Lingkungan Belajar Kondusif</h5>
-                                    <div class="star f-12 mb-3">
-                                        <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
-                                            class="fas fa-star text-warning"></i><i
-                                            class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i>
-                                    </div>
-                                    <p class="mb-2 text-muted">Sekolah ini memberikan fondasi yang kuat untuk saya
-                                        melanjutkan ke perguruan tinggi favorit. Guru-gurunya sangat mendukung.</p>
-                                    <h6 class="mb-0">Budi Santoso, Alumni</h6>
+                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.2s"
+                        style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
+                        onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
+                        <div class="card-body p-4">
+                            <!-- Stars -->
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                    class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                    class="fas fa-star text-warning"></i>
+                            </div>
+                            <h5 class="mb-2 fw-600">Lingkungan Belajar Kondusif</h5>
+                            <p class="mb-4 text-muted small">Sekolah ini memberikan fondasi yang kuat untuk saya melanjutkan ke perguruan tinggi favorit. Guru-gurunya sangat mendukung dan inspiratif.</p>
+                            
+                            <div class="d-flex align-items-center pt-3 border-top">
+                                <img src="{{ asset('assets/images/user/avatar-1.jpg') }}"
+                                    alt="Avatar" class="img-fluid rounded-circle wid-40 me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-0 fw-600">Budi Santoso</h6>
+                                    <small class="text-muted">Alumni 2023</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Testimoni 2 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card wow fadeInRight" data-wow-delay="0.4s">
-                        <div class="card-body">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <img src="../assets/images/user/avatar-2.jpg"
-                                        alt="Foto close-up orang tua siswa wanita tersenyum"
-                                        class="img-fluid wid-40 rounded-circle">
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h5 class="mb-1">Pengembangan Karakter</h5>
-                                    <div class="star f-12 mb-3">
-                                        <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
-                                            class="fas fa-star text-warning"></i><i
-                                            class="fas fa-star text-warning"></i><i
-                                            class="fas fa-star-half-alt text-warning"></i>
-                                    </div>
-                                    <p class="mb-2 text-muted">Anak saya berkembang pesat di sini, tidak hanya akademis
-                                        tapi juga karakternya. Lingkungannya sangat positif.</p>
-                                    <h6 class="mb-0">Rina Wulandari, Orang Tua Siswa</h6>
+                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.3s"
+                        style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
+                        onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
+                        <div class="card-body p-4">
+                            <!-- Stars -->
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                    class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                    class="fas fa-star-half-alt text-warning"></i>
+                            </div>
+                            <h5 class="mb-2 fw-600">Pengembangan Karakter</h5>
+                            <p class="mb-4 text-muted small">Anak saya berkembang pesat di sini, tidak hanya akademis tapi juga karakternya. Lingkungannya sangat positif dan mendukung pertumbuhan holistik.</p>
+                            
+                            <div class="d-flex align-items-center pt-3 border-top">
+                                <img src="{{ asset('assets/images/user/avatar-2.jpg') }}"
+                                    alt="Avatar" class="img-fluid rounded-circle wid-40 me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-0 fw-600">Rina Wulandari</h6>
+                                    <small class="text-muted">Orang Tua Siswa</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Testimoni 3 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card wow fadeInRight" data-wow-delay="0.6s">
-                        <div class="card-body">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <img src="../assets/images/user/avatar-3.jpg"
-                                        alt="Foto close-up alumni wanita berhijab tersenyum"
-                                        class="img-fluid wid-40 rounded-circle">
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h5 class="mb-1">Fasilitas Sangat Memadai</h5>
-                                    <div class="star f-12 mb-3">
-                                        <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
-                                            class="fas fa-star text-warning"></i><i
-                                            class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i>
-                                    </div>
-                                    <p class="mb-2 text-muted">Fasilitasnya lengkap dan modern, membuat kegiatan belajar
-                                        mengajar menjadi sangat efektif dan menyenangkan.</p>
-                                    <h6 class="mb-0">Siti Aminah, Alumni</h6>
+                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.4s"
+                        style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
+                        onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
+                        <div class="card-body p-4">
+                            <!-- Stars -->
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                    class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
+                                    class="fas fa-star text-warning"></i>
+                            </div>
+                            <h5 class="mb-2 fw-600">Fasilitas Sangat Memadai</h5>
+                            <p class="mb-4 text-muted small">Fasilitasnya lengkap dan modern, membuat kegiatan belajar mengajar menjadi sangat efektif dan menyenangkan untuk semua siswa.</p>
+                            
+                            <div class="d-flex align-items-center pt-3 border-top">
+                                <img src="{{ asset('assets/images/user/avatar-3.jpg') }}"
+                                    alt="Avatar" class="img-fluid rounded-circle wid-40 me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-0 fw-600">Siti Aminah</h6>
+                                    <small class="text-muted">Alumni 2022</small>
                                 </div>
                             </div>
                         </div>
@@ -318,4 +433,5 @@
         </div>
     </section>
     <!-- [ Testimoni ] End -->
+
 @endsection

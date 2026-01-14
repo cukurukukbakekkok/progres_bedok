@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('content')
 <style>
@@ -47,6 +47,7 @@
             <tr>
                 <th>Judul</th>
                 <th>Tanggal</th>
+                <th>Aktif</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -55,6 +56,7 @@
             <tr>
                 <td>{{ $p->judul }}</td>
                 <td>{{ \Carbon\Carbon::parse($p->tanggal_post)->format('d M Y') }}</td>
+                <td>{!! $p->is_active ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Tidak</span>' !!}</td>
                 <td>
                     <a href="{{ route('admin.pengumuman.edit', $p->id) }}" class="btn btn-warning btn-sm">Edit</a>
                     <form action="{{ route('admin.pengumuman.destroy', $p->id) }}" method="POST" class="d-inline">

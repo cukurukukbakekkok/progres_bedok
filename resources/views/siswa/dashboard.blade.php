@@ -3,7 +3,8 @@
 @section('content')
 <style>
     body {
-        background: #f3f6ff;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
     }
     .animate-card {
         opacity: 0;
@@ -17,11 +18,11 @@
         }
     }
     .hero-box {
-        background: linear-gradient(120deg, #0066ff, #00c3ff);
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
         border-radius: 18px;
         padding: 35px;
         color: white;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.18);
+        box-shadow: 0 6px 15px rgba(6, 182, 212, 0.2);
     }
     .menu-card {
         border-radius: 18px;
@@ -42,7 +43,7 @@
     h1, h2, h3, h4, h5 { margin: 0; }
 </style>
 
-<div class="container py-4">
+<div class="container py-4" style="position: relative; z-index: 1;">
 
     {{-- Header Card --}}
     <div class="hero-box mb-4 animate-card" style="animation-delay: .05s">
