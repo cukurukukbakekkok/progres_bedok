@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
         // Tambahkan seeder custom milikmu
         $this->call([
             UserSeeder::class,
+            JurusanSeeder::class,
+            KelasSeeder::class,
         ]);
     }
 }

@@ -310,6 +310,21 @@ class CalonSiswaController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
+        // Check if documents are uploaded before confirming
+        $dokumen = \App\Models\DokumenPersyaratan::where('id_siswa', $calon->id)->first();
+        $hasDocuments = $dokumen && (
+            $dokumen->akte_kelahiran || 
+            $dokumen->ijazah_smp || 
+            $dokumen->skl_smp || 
+            $dokumen->kartu_keluarga || 
+            $dokumen->ktp_ortu
+        );
+
+        if (!$hasDocuments) {
+            return redirect()->route('siswa.dokumen.index')
+                ->with('error', 'Silakan upload dokumen persyaratan terlebih dahulu sebelum konfirmasi data.');
+        }
+
         // Mark as confirmed - data akan muncul di admin list
         $calon->update([
             'data_confirmed' => true,
