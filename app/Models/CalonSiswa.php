@@ -61,6 +61,9 @@ class CalonSiswa extends Model
         'status_berkas',
         'status_kelulusan',
         'status_pembayaran',
+        'data_confirmed',
+        'data_locked',
+        'confirmed_at',
         'tahap_form',
     ];
 
@@ -117,5 +120,36 @@ class CalonSiswa extends Model
     {
         return $this->hasOne(Pembayaran::class, 'id_siswa');
     }
+
+    /**
+     * Check apakah data bisa diedit
+     * Data hanya locked setelah pembayaran verified (data_locked = true)
+     * Setelah confirm tapi belum bayar: tidak bisa edit tapi tidak locked
+     */
+    public function isDataEditable()
+    {
+        // Jika data_locked = true, berarti sudah verified dan truly locked
+        return !$this->data_locked;
+    }
+    
+    /**
+     * Check apakah data dalam status confirmed (tidak bisa edit)
+     */
+    public function isDataConfirmed()
+    {
+        return $this->data_confirmed;
+    }
+
+    /**
+     * Lock data ketika pembayaran verified
+     */
+    public function lockData()
+    {
+        $this->update([
+            'data_locked' => true,
+            'data_confirmed' => true,
+        ]);
+    }
 }
+
 

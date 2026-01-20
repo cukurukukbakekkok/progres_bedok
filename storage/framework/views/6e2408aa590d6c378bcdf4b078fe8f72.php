@@ -249,6 +249,25 @@
                 </tr>
             </table>
 
+            <?php if($siswa->status_kelulusan == 'Lolos' && strtolower($siswa->status_pembayaran) == 'lunas'): ?>
+            <div class="section-title" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%)">📜 DOKUMEN KELULUSAN</div>
+            <div class="alert alert-success border-0 shadow-sm d-flex align-items-center justify-content-between p-4">
+                <div>
+                    <h5 class="fw-bold mb-1">
+                        Bukti Penerimaan / Surat Kelulusan
+                        <?php if($siswa->is_bukti_dikirim): ?>
+                            <span class="badge bg-success ms-2"><i class="ti ti-check me-1"></i> TERKIRIM</span>
+                        <?php endif; ?>
+                    </h5>
+                    <p class="mb-0 text-dark opacity-75 small">Surat ini dapat pratinjau sebelum dikirim ke siswa atau dicetak untuk arsip.</p>
+                </div>
+                <a href="<?php echo e(route('admin.calon_siswa.preview_bukti', $siswa->id)); ?>" class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm">
+                    <i class="ti ti-mail-forward me-1"></i> <?php echo e($siswa->is_bukti_dikirim ? 'LIHAT / KIRIM ULANG' : 'KIRIM BUKTI PENERIMAAN'); ?>
+
+                </a>
+            </div>
+            <?php endif; ?>
+
             <hr class="my-4">
 
             <h5 class="fw-bold mb-3">🛠️ AKSI ADMIN</h5>

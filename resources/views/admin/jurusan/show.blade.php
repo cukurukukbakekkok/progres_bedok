@@ -102,11 +102,11 @@
                                         <td><strong>{{ $k->nama }}</strong></td>
                                         <td><span class="badge bg-secondary">{{ $k->kapasitas }}</span></td>
                                         <td>
-                                            <span class="badge bg-warning text-dark">{{ $k->jumlah_siswa }}</span>
+                                            <span class="badge bg-warning text-dark">{{ $k->calon_siswa_count }}</span>
                                         </td>
                                         <td>
                                             @php
-                                                $sisa = $k->kapasitas - $k->jumlah_siswa;
+                                                $sisa = $k->kapasitas - $k->calon_siswa_count;
                                                 $color = $sisa > 10 ? 'success' : ($sisa > 0 ? 'warning' : 'danger');
                                             @endphp
                                             <span class="badge bg-{{ $color }}">{{ $sisa }}</span>
@@ -116,7 +116,7 @@
                                                     data-bs-target="#editKelas{{ $k->id }}" title="Edit kapasitas">
                                                 ✏️
                                             </button>
-                                            @if($k->jumlah_siswa == 0)
+                                            @if($k->calon_siswa_count == 0)
                                                 <form action="{{ route('admin.jurusan.kelas.destroy', [$jurusan->id, $k->id]) }}" 
                                                       method="POST" class="d-inline">
                                                     @csrf @method('DELETE')
@@ -159,8 +159,8 @@
         @csrf @method('PUT')
         <div class="modal-body">
           <label class="form-label">Kapasitas</label>
-          <input type="number" name="kapasitas" class="form-control" value="{{ $k->kapasitas }}" min="{{ $k->jumlah_siswa }}" required>
-          <small class="text-muted">Minimum: {{ $k->jumlah_siswa }} (jumlah siswa saat ini)</small>
+          <input type="number" name="kapasitas" class="form-control" value="{{ $k->kapasitas }}" min="{{ $k->calon_siswa_count }}" required>
+          <small class="text-muted">Minimum: {{ $k->calon_siswa_count }} (jumlah siswa saat ini)</small>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

@@ -17,6 +17,11 @@ class Promo extends Model
         'used_count',
     ];
 
+    protected $casts = [
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
+    ];
+
     public function gelombang()
     {
         return $this->belongsTo(GelombangPendaftaran::class, 'id_gelombang');

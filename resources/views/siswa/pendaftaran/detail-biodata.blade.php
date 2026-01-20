@@ -424,6 +424,29 @@
 
         <!-- ACTION BUTTONS -->
         <div class="action-buttons">
+            @if($calon->isDataConfirmed())
+                @if($calon->data_locked)
+                    <div style="padding: 15px; background: #ffebee; border-radius: 8px; text-align: center; border-left: 4px solid #d32f2f;">
+                        <i class="fas fa-lock" style="color: #d32f2f;"></i>
+                        <strong style="color: #d32f2f;">Data Terkunci</strong>
+                        <p style="margin-top: 5px; font-size: 12px; color: #888;">
+                            Data Anda telah terkunci setelah verifikasi pembayaran. Hubungi admin jika ada perubahan data yang diperlukan.
+                        </p>
+                    </div>
+                @else
+                    <div style="padding: 15px; background: #e3f2fd; border-radius: 8px; text-align: center; border-left: 4px solid #1976d2;">
+                        <i class="fas fa-check-circle" style="color: #1976d2;"></i>
+                        <strong style="color: #1976d2;">Data Dikonfirmasi</strong>
+                        <p style="margin-top: 5px; font-size: 12px; color: #888;">
+                            Data Anda telah dikonfirmasi. Silakan lanjutkan dengan pembayaran melalui dashboard.
+                        </p>
+                    </div>
+                @endif
+            @else
+                <a href="{{ route('siswa.pendaftaran.create') }}" class="btn-action btn-warning-custom">
+                    <i class="fas fa-edit"></i> Edit Data
+                </a>
+            @endif
             <a href="{{ route('siswa.dashboard') }}" class="btn-action btn-primary-custom">
                 <i class="fas fa-arrow-right"></i> Kembali ke Dashboard
             </a>

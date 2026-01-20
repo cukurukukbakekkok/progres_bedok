@@ -24,7 +24,7 @@ class Kelas extends Model
      */
     public function isFull(): bool
     {
-        return $this->jumlah_siswa >= $this->kapasitas;
+        return $this->calonSiswa()->count() >= $this->kapasitas;
     }
 
     /**
@@ -32,7 +32,7 @@ class Kelas extends Model
      */
     public function getSisaKapasitas(): int
     {
-        return $this->kapasitas - $this->jumlah_siswa;
+        return $this->kapasitas - $this->calonSiswa()->count();
     }
 
     /**
@@ -40,9 +40,7 @@ class Kelas extends Model
      */
     public function safeDecrement(): void
     {
-        if ($this->jumlah_siswa > 0) {
-            $this->decrement('jumlah_siswa');
-        }
+        // No longer needed as we use relationship count
     }
 
     /**
@@ -60,10 +58,12 @@ class Kelas extends Model
             return null;
         }
 
-        // Cari kelas yang masih ada tempat
+        // Cari kelas yang masih ada tempat (cek live count)
         $kelasAvailable = self::where('jurusan_id', $jurusan->id)
-            ->whereRaw('jumlah_siswa < kapasitas')
-            ->orderBy('nama')
+            ->get()
+            ->filter(function($k) {
+                return $k->calonSiswa()->count() < $k->kapasitas;
+            })
             ->first();
 
         if ($kelasAvailable) {

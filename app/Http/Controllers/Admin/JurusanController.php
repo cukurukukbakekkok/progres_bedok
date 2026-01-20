@@ -11,14 +11,14 @@ class JurusanController extends Controller
 {
     public function index()
     {
-        $jurusans = Jurusan::withCount('kelas')->get();
+        $jurusans = Jurusan::withCount(['kelas', 'pendaftar'])->get();
         return view('admin.jurusan.index', compact('jurusans'));
     }
 
     public function show($id)
     {
         $jurusan = Jurusan::findOrFail($id);
-        $kelas = $jurusan->kelas()->orderBy('nama')->get();
+        $kelas = $jurusan->kelas()->withCount('calonSiswa')->orderBy('nama')->get();
         return view('admin.jurusan.show', compact('jurusan', 'kelas'));
     }
 
@@ -46,7 +46,7 @@ class JurusanController extends Controller
     public function kelasDestroy($jurusanId, $kelasId)
     {
         $kelas = Kelas::findOrFail($kelasId);
-        if ($kelas->jumlah_siswa > 0) {
+        if ($kelas->calonSiswa()->count() > 0) {
             return back()->with('error', 'Tidak bisa hapus kelas yang ada siswa');
         }
         $kelas->delete();

@@ -24,7 +24,7 @@
                     
                     <div class="wow fadeInUp" data-wow-delay="0.2s" style="animation-duration: 0.8s;">
                         <h3 class="text-white opacity-90 mb-5 fw-500" style="font-size: 1.3rem; letter-spacing: 0.5px;">
-                            <span class="badge badge-soft-warning" style="background: rgba(255, 235, 59, 0.2); border: 1px solid rgba(255, 235, 59, 0.5); color: #ffeb3b;">Sekolah Harapan Bangsa</span>
+                            <span class="badge badge-soft-warning" style="background: rgba(255, 235, 59, 0.2); border: 1px solid rgba(255, 235, 59, 0.5); color: #ffeb3b;">SMK ANTARTIKA 1 SIDOARJO</span>
                         </h3>
                         <p class="text-white opacity-75 lead mb-4" style="max-width: 600px; margin-left: auto; margin-right: auto; font-size: 1.1rem; font-weight: 300;">
                             Wujudkan masa depan gemilang melalui pendidikan berkualitas. Daftar dengan mudah dan cepat melalui sistem pendaftaran siswa baru kami yang modern dan aman.
@@ -97,7 +97,64 @@
     </section>
     <!-- [ Pengumuman ] End -->
 
-    <!-- [ Keunggulan Kami ] start -->
+    <!-- [ Promo ] Start -->
+    @if($promo->count() > 0)
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row justify-content-center text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="col-md-10 col-xl-6">
+                    <span class="badge badge-soft-warning mb-3" style="background: #fff3cd; color: #856404; padding: 8px 16px; border-radius: 20px;">🔥 Penawaran Spesial</span>
+                    <h2 class="mb-3 fw-700" style="font-size: 2.5rem;">Promo<br><span class="bg-gradient-primary text-transparent d-inline-block" style="background: linear-gradient(90deg, #ffc107 0%, #ff9800 100%); -webkit-background-clip: text;">Pendaftaran</span></h2>
+                    <p class="text-muted lead">Gunakan kode promo di bawah ini untuk mendapatkan potongan biaya pendaftaran!</p>
+                </div>
+            </div>
+            
+            <div class="row g-4 justify-content-center">
+                @foreach($promo as $item)
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="{{ $loop->index * 0.1 + 0.2 }}s">
+                    <div class="card border-0 h-100 position-relative overflow-hidden" 
+                        style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                        
+                        <!-- Background decoration -->
+                        <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); border-radius: 50%; opacity: 0.1;"></div>
+                        <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; opacity: 0.05;"></div>
+
+                        <div class="card-body text-center p-4">
+                            <h5 class="fw-bold text-muted mb-2">Kode Promo:</h5>
+                            <div class="d-flex justify-content-center align-items-center mb-4">
+                                <div class="bg-light px-4 py-2 rounded-3 border border-2 border-warning border-dashed d-inline-block position-relative">
+                                    <h3 class="mb-0 fw-800 text-dark tracking-wide">{{ $item->kode_promo }}</h3>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="display-6 fw-bold text-primary mb-1">
+                                    Diskon Rp {{ number_format($item->diskon_nominal/1000, 0) }}rb
+                                </div>
+                                <small class="text-muted">Potongan langsung biaya pendaftaran</small>
+                            </div>
+
+                            <ul class="list-unstyled text-start bg-light p-3 rounded-3 mb-0 small">
+                                <li class="mb-2 d-flex align-items-center text-muted">
+                                    <i class="ti ti-calendar me-2 text-warning"></i>
+                                    Berlaku s/d {{ $item->tanggal_selesai ? \Carbon\Carbon::parse($item->tanggal_selesai)->format('d M Y') : 'Seterusnya' }}
+                                </li>
+                                @if($item->max_usage > 0)
+                                <li class="d-flex align-items-center text-muted">
+                                    <i class="ti ti-ticket me-2 text-warning"></i>
+                                    Sisa Kuota: {{ max($item->max_usage - $item->used_count, 0) }} pendaftar
+                                </li>
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+    <!-- [ Promo ] End -->
     <section class="py-5">
         <div class="container">
             <div class="row justify-content-center text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
@@ -168,7 +225,7 @@
                 <div class="col-md-10 col-xl-6">
                     <span class="badge badge-soft-primary mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 16px; border-radius: 20px;">Proses Cepat</span>
                     <h2 class="mb-3 fw-700" style="font-size: 2.5rem;">Alur<br><span class="bg-gradient-primary text-transparent d-inline-block" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text;">Pendaftaran</span></h2>
-                    <p class="text-muted lead">Ikuti 4 langkah mudah untuk menjadi bagian dari keluarga besar Sekolah Harapan Bangsa.</p>
+                    <p class="text-muted lead">Ikuti 4 langkah mudah untuk menjadi bagian dari keluarga besar SMK ANTARTIKA 1 SIDOARJO.</p>
                 </div>
             </div>
             
@@ -262,7 +319,7 @@
                 <div class="col-md-8 text-center wow fadeInUp" data-wow-delay="0.2s">
                     <h2 class="text-white mb-4 fw-700" style="font-size: 2.5rem;">
                         Siap Bergabung dengan<br>
-                        <span style="background: linear-gradient(90deg, #fff 0%, #ffeb3b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Sekolah Harapan Bangsa?</span>
+                        <span style="background: linear-gradient(90deg, #fff 0%, #ffeb3b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">SMK ANTARTIKA 1 SIDOARJO?</span>
                     </h2>
                     <p class="text-white opacity-85 mb-5 lead" style="font-size: 1.1rem;">
                         Pendaftaran akan segera ditutup. Jangan lewatkan kesempatan untuk menjadi siswa berprestasi di sekolah kami. Klik tombol di bawah untuk memulai proses pendaftaran sekarang juga.
@@ -287,11 +344,11 @@
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
-                                    <h2 class="m-0 text-white fw-700">1200+</h2>
+                                    <h2 class="m-0 text-white fw-700">{{ $totalPendaftar }}</h2>
                                 </div>
                                 <div class="flex-grow-1 ms-4">
                                     <h5 class="mb-2 text-white fw-600">Total Pendaftar</h5>
-                                    <p class="mb-0 text-white opacity-75 small">Antusiasme tinggi dari calon siswa baru setiap tahunnya.</p>
+                                    <p class="mb-0 text-white opacity-75 small">Siswa yang sudah terdaftar dan dikonfirmasi.</p>
                                 </div>
                             </div>
                         </div>
@@ -303,11 +360,11 @@
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
-                                    <h2 class="m-0 text-white fw-700">350</h2>
+                                    <h2 class="m-0 text-white fw-700">{{ $kursiTersedia }}</h2>
                                 </div>
                                 <div class="flex-grow-1 ms-4">
                                     <h5 class="mb-2 text-white fw-600">Kursi Tersedia</h5>
-                                    <p class="mb-0 text-white opacity-75 small">Kuota terbatas untuk menjaga kualitas proses belajar mengajar.</p>
+                                    <p class="mb-0 text-white opacity-75 small">Kuota pendaftaran gelombang aktif saat ini.</p>
                                 </div>
                             </div>
                         </div>
@@ -319,11 +376,11 @@
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
-                                    <h2 class="m-0 text-white fw-700">3</h2>
+                                    <h2 class="m-0 text-white fw-700">{{ $jurusanCount }}</h2>
                                 </div>
                                 <div class="flex-grow-1 ms-4">
                                     <h5 class="mb-2 text-white fw-600">Jurusan Unggulan</h5>
-                                    <p class="mb-0 text-white opacity-75 small">Pilihan jurusan yang relevan dengan kebutuhan industri saat ini.</p>
+                                    <p class="mb-0 text-white opacity-75 small">Pilihan jurusan yang tersedia untuk pendaftaran.</p>
                                 </div>
                             </div>
                         </div>
@@ -334,104 +391,6 @@
     </section>
     <!-- [ Statistik ] End -->
 
-    <!-- [ Testimoni ] start -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row justify-content-center text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="col-md-10 col-xl-6">
-                    <span class="badge badge-soft-primary mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 16px; border-radius: 20px;">Testimoni</span>
-                    <h2 class="mb-3 fw-700" style="font-size: 2.5rem;">Apa Kata<br><span class="bg-gradient-primary text-transparent d-inline-block" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text;">Mereka?</span></h2>
-                    <p class="text-muted lead">Kami bangga dapat memberikan dampak positif. Simak pengalaman para alumni dan orang tua siswa kami.</p>
-                </div>
-            </div>
-            
-            <div class="row g-4">
-                <!-- Testimoni 1 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.2s"
-                        style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
-                        onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
-                        <div class="card-body p-4">
-                            <!-- Stars -->
-                            <div class="mb-3">
-                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
-                                    class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
-                                    class="fas fa-star text-warning"></i>
-                            </div>
-                            <h5 class="mb-2 fw-600">Lingkungan Belajar Kondusif</h5>
-                            <p class="mb-4 text-muted small">Sekolah ini memberikan fondasi yang kuat untuk saya melanjutkan ke perguruan tinggi favorit. Guru-gurunya sangat mendukung dan inspiratif.</p>
-                            
-                            <div class="d-flex align-items-center pt-3 border-top">
-                                <img src="{{ asset('assets/images/user/avatar-1.jpg') }}"
-                                    alt="Avatar" class="img-fluid rounded-circle wid-40 me-3" style="width: 40px; height: 40px; object-fit: cover;">
-                                <div>
-                                    <h6 class="mb-0 fw-600">Budi Santoso</h6>
-                                    <small class="text-muted">Alumni 2023</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Testimoni 2 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.3s"
-                        style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
-                        onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
-                        <div class="card-body p-4">
-                            <!-- Stars -->
-                            <div class="mb-3">
-                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
-                                    class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
-                                    class="fas fa-star-half-alt text-warning"></i>
-                            </div>
-                            <h5 class="mb-2 fw-600">Pengembangan Karakter</h5>
-                            <p class="mb-4 text-muted small">Anak saya berkembang pesat di sini, tidak hanya akademis tapi juga karakternya. Lingkungannya sangat positif dan mendukung pertumbuhan holistik.</p>
-                            
-                            <div class="d-flex align-items-center pt-3 border-top">
-                                <img src="{{ asset('assets/images/user/avatar-2.jpg') }}"
-                                    alt="Avatar" class="img-fluid rounded-circle wid-40 me-3" style="width: 40px; height: 40px; object-fit: cover;">
-                                <div>
-                                    <h6 class="mb-0 fw-600">Rina Wulandari</h6>
-                                    <small class="text-muted">Orang Tua Siswa</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Testimoni 3 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 h-100 wow fadeInUp" data-wow-delay="0.4s"
-                        style="border-radius: 15px; background: white; transition: all 0.4s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.08); overflow: hidden;"
-                        onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.15)'"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)'">
-                        <div class="card-body p-4">
-                            <!-- Stars -->
-                            <div class="mb-3">
-                                <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
-                                    class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i
-                                    class="fas fa-star text-warning"></i>
-                            </div>
-                            <h5 class="mb-2 fw-600">Fasilitas Sangat Memadai</h5>
-                            <p class="mb-4 text-muted small">Fasilitasnya lengkap dan modern, membuat kegiatan belajar mengajar menjadi sangat efektif dan menyenangkan untuk semua siswa.</p>
-                            
-                            <div class="d-flex align-items-center pt-3 border-top">
-                                <img src="{{ asset('assets/images/user/avatar-3.jpg') }}"
-                                    alt="Avatar" class="img-fluid rounded-circle wid-40 me-3" style="width: 40px; height: 40px; object-fit: cover;">
-                                <div>
-                                    <h6 class="mb-0 fw-600">Siti Aminah</h6>
-                                    <small class="text-muted">Alumni 2022</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- [ Testimoni ] End -->
+
 
 @endsection

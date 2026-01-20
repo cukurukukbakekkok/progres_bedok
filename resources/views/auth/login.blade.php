@@ -82,7 +82,7 @@
                                 Ingat saya
                             </label>
                         </div>
-                        <a href="{{ route('forgot_password.email_form') }}" style="color: #667eea; font-weight: 600; text-decoration: none; font-size: 14px; transition: all 0.3s ease;"
+                        <a href="{{ route('password.request') }}" style="color: #667eea; font-weight: 600; text-decoration: none; font-size: 14px; transition: all 0.3s ease;"
                             onmouseover="this.style.color='#764ba2';"
                             onmouseout="this.style.color='#667eea';">
                             Lupa Password?
@@ -121,7 +121,7 @@
 
         <!-- Footer Text -->
         <p style="text-align: center; color: rgba(255, 255, 255, 0.7); margin-top: 30px; font-size: 12px;">
-            © 2026 PPDB Online - Sekolah Harapan Bangsa. All rights reserved.
+            © 2026 PPDB Online - SMK ANTARTIKA 1 SIDOARJO. All rights reserved.
         </p>
     </div>
 @endsection

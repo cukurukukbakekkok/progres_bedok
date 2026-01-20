@@ -88,77 +88,151 @@
 
 
     {{-- STATUS PENDAFTARAN --}}
+    {{-- STATUS & BIODATA --}}
     @if($calon)
-        <div class="alert alert-info mt-4 animate-card" style="animation-delay: .50s; border-radius:14px;">
-            <b>Status Pendaftaran:</b>
-            @if($calon->status_kelulusan == 'Lolos')
-                🟢 <span class="text-success fw-bold">LOLOS Seleksi</span>
-            @elseif($calon->status_kelulusan == 'Tidak Lolos')
-                🔴 <span class="text-danger fw-bold">TIDAK LOLOS Seleksi</span>
-            @else
-                ⚪ <span class="text-secondary fw-bold">Belum Diputuskan</span>
-            @endif
+    <div class="row mt-4 g-4 animate-card" style="animation-delay: .50s;">
+        <!-- Card Kiri: Status -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="card-header border-0 p-4 pb-0 bg-white">
+                    <h5 class="fw-bold mb-0">📊 Status Pendaftaran</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <label class="text-muted small fw-bold mb-1 text-uppercase">Kelulusan</label>
+                        <div>
+                            @if($calon->status_kelulusan == 'Lolos')
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-3 fs-6 w-100 d-block text-center">
+                                    <i class="ti ti-check me-1"></i> LOLOS SELEKSI
+                                </span>
+                            @elseif($calon->status_kelulusan == 'Tidak Lolos')
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-3 fs-6 w-100 d-block text-center">
+                                    <i class="ti ti-x me-1"></i> TIDAK LOLOS
+                                </span>
+                            @else
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 rounded-3 fs-6 w-100 d-block text-center">
+                                    <i class="ti ti-clock me-1"></i> MENUNGGU
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="text-muted small fw-bold mb-1 text-uppercase">Pembayaran</label>
+                         <div>
+                            @if(strtolower($calon->status_pembayaran) == 'lunas')
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-3 w-100 d-block text-center">
+                                    <i class="ti ti-check me-1"></i> LUNAS
+                                </span>
+                            @elseif(strtolower($calon->status_pembayaran) == 'menunggu')
+                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-3 w-100 d-block text-center">
+                                    <i class="ti ti-clock me-1"></i> VERIFIKASI ADMIN
+                                </span>
+                            @else
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-3 w-100 d-block text-center">
+                                    <i class="ti ti-alert-circle me-1"></i> BELUM BAYAR
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-muted small fw-bold mb-1 text-uppercase">Verifikasi Berkas</label>
+                        <div>
+                            @if($calon->status_berkas == 'Valid')
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-3 w-100 d-block text-center">
+                                    <i class="ti ti-check me-1"></i> VALID
+                                </span>
+                            @elseif($calon->status_berkas == 'Tidak Valid')
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-3 w-100 d-block text-center">
+                                    <i class="ti ti-ban me-1"></i> DITOLAK
+                                </span>
+                            @else
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 rounded-3 w-100 d-block text-center">
+                                    <i class="ti ti-clock me-1"></i> BELUM DIVALIDASI
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    @if($calon->status_kelulusan == 'Lolos' && strtolower($calon->status_pembayaran) == 'lunas' && $calon->is_bukti_dikirim)
+                    <div class="mt-4 pt-3 border-top">
+                        <a href="{{ route('siswa.pendaftaran.download_bukti', $calon->id) }}" class="btn btn-primary w-100 py-3 rounded-4 fw-bold shadow-sm">
+                            <i class="ti ti-printer me-2 fs-4"></i> CETAK BUKTI PENERIMAAN
+                        </a>
+                        <p class="text-muted small text-center mt-2 mb-0">Silakan cetak sebagai bukti pendaftaran ulang.</p>
+                    </div>
+                    @endif
+                </div>
+            </div>
         </div>
 
-        {{-- STATUS PEMBAYARAN --}}
-        <div class="alert alert-secondary mt-2 animate-card" style="animation-delay: .55s; border-radius:14px;">
-            <b>Status Pembayaran:</b>
-            @if(strtolower($calon->status_pembayaran) == 'belum')
-                🔴 <span class="text-danger fw-bold">Belum Membayar</span>
-            @elseif(strtolower($calon->status_pembayaran) == 'menunggu')
-                ⏳ <span class="text-warning fw-bold">Menunggu Validasi Admin</span>
-            @elseif(strtolower($calon->status_pembayaran) == 'lunas')
-                🟢 <span class="text-success fw-bold">Lunas</span>
-            @endif
+        <!-- Card Kanan: Biodata Ringkas -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header border-0 p-4 pb-0 bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">👤 Biodata Siswa</h5>
+                    <a href="{{ route('siswa.pendaftaran.create') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                        <i class="ti ti-edit me-1"></i> Lihat Lengkap
+                    </a>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-sm-6">
+                            <div class="bg-light p-3 rounded-3 h-100">
+                                <label class="text-muted small text-uppercase fw-bold mb-1">Nama Lengkap</label>
+                                <div class="fw-bold text-dark fs-6">{{ $calon->nama_lengkap }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="bg-light p-3 rounded-3 h-100">
+                                <label class="text-muted small text-uppercase fw-bold mb-1">NISN</label>
+                                <div class="fw-bold text-dark fs-6">{{ $calon->nisn }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="bg-light p-3 rounded-3 h-100">
+                                <label class="text-muted small text-uppercase fw-bold mb-1">Jurusan Pilihan</label>
+                                <div class="fw-bold text-primary fs-6">{{ $calon->jurusan }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="bg-light p-3 rounded-3 h-100">
+                                <label class="text-muted small text-uppercase fw-bold mb-1">Gelombang</label>
+                                <div class="fw-bold text-dark fs-6">{{ $calon->gelombang?->nama ?? '-' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="bg-light p-3 rounded-3 h-100">
+                                <label class="text-muted small text-uppercase fw-bold mb-1">Sekolah Asal</label>
+                                <div class="fw-bold text-dark fs-6">{{ $calon->asal_sekolah }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="bg-light p-3 rounded-3 h-100">
+                                <label class="text-muted small text-uppercase fw-bold mb-1">Nomor HP</label>
+                                <div class="fw-bold text-dark fs-6">{{ $calon->no_hp }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        {{-- STATUS VERIFIKASI BERKAS --}}
-        <div class="alert alert-primary mt-2 animate-card" style="animation-delay: .58s; border-radius:14px;">
-            <b>Status Berkas:</b>
-            @if($calon->status_berkas == 'Belum')
-                🔴 <span class="text-danger fw-bold">Berkas Belum Divalidasi</span>
-            @elseif($calon->status_berkas == 'Valid')
-                🟢 <span class="text-success fw-bold">Berkas Sudah Valid ✓</span>
-            @elseif($calon->status_berkas == 'Tidak Valid')
-                ⚠️ <span class="text-warning fw-bold">Berkas Ditolak — Silakan Perbaiki</span>
-            @endif
-        </div>
-
-        {{-- DETAIL BIODATA (menggantikan Status Kelulusan) --}}
-        <div class="alert alert-warning mt-2 animate-card" style="animation-delay: .61s; border-radius:14px;">
-            <b>📋 Detail Biodata:</b>
-            <a href="{{ route('siswa.biodata') }}" class="btn btn-warning btn-sm">Lihat Detail Biodata</a>
+    </div>
+    @else
+        <div class="alert alert-warning mt-4 animate-card rounded-4 border-0 shadow-sm p-4" style="animation-delay: .55s">
+            <div class="d-flex align-items-center">
+                <i class="ti ti-alert-triangle fs-1 me-3 text-warning"></i>
+                <div>
+                    <h5 class="fw-bold text-dark">Belum Mendaftar?</h5>
+                    <p class="mb-0">Silakan lengkapi formulir pendaftaran untuk memulai proses Penerimaan Peserta Didik Baru.</p>
+                </div>
+                <div class="ms-auto">
+                    <a href="{{ route('siswa.pendaftaran.create') }}" class="btn btn-warning fw-bold px-4 py-2 rounded-pill">Daftar Sekarang</a>
+                </div>
+            </div>
         </div>
     @endif
-
-
-    {{-- BIODATA SISWA --}}
-    <div class="mt-4">
-        @if($calon)
-        <div class="card shadow p-4 animate-card" style="animation-delay: .65s">
-            <h4 class="mb-3"><b>📌 Biodata Siswa</b></h4>
-
-            <table class="table table-bordered">
-                <tr><th>Nama Lengkap</th><td>{{ $calon->nama_lengkap }}</td></tr>
-                <tr><th>NISN</th><td>{{ $calon->nisn }}</td></tr>
-                <tr><th>Jenis Kelamin</th><td>{{ $calon->jenis_kelamin }}</td></tr>
-                <tr><th>TTL</th><td>{{ $calon->tempat_lahir }}, {{ $calon->tanggal_lahir }}</td></tr>
-                <tr><th>Asal Sekolah</th><td>{{ $calon->asal_sekolah }}</td></tr>
-                <tr><th>Jurusan</th><td><strong>{{ $calon->jurusan }}</strong></td></tr>
-                <tr><th>Gelombang</th><td><strong>{{ $calon->gelombang?->nama ?? '-' }}</strong></td></tr>
-                <tr><th>Alamat</th><td>{{ $calon->alamat }}</td></tr>
-                <tr><th>Nama Orang Tua</th><td>{{ $calon->nama_ortu }}</td></tr>
-                <tr><th>No HP</th><td>{{ $calon->no_hp }}</td></tr>
-            </table>
-
-            <a href="{{ route('siswa.biodata') }}" class="btn btn-info btn-sm mt-3">📄 Lihat Detail Biodata</a>
-        </div>
-        @else
-        <div class="alert alert-warning mt-4 animate-card" style="animation-delay: .55s">
-            ⚠️ Biodata belum tersedia — silakan isi pendaftaran terlebih dahulu.
-        </div>
-        @endif
-    </div>
 
 </div>
 @endsection

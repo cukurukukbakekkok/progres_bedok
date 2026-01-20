@@ -25,9 +25,33 @@ Route::get('/', function () {
         })
         ->latest('tanggal_post')
         ->limit(3)
+        ->limit(3)
         ->get();
-    return view('welcome', compact('pengumuman'));
+
+    // Ambil promo aktif
+    $promo = \App\Models\Promo::where('is_active', 1)
+        ->where(function ($query) {
+            $query->whereNull('tanggal_mulai')
+                  ->orWhere('tanggal_mulai', '<=', now());
+        })
+        ->where(function ($query) {
+            $query->whereNull('tanggal_selesai')
+                  ->orWhere('tanggal_selesai', '>=', now());
+        })
+        ->get();
+
+    // Hitung statistik dinamis
+    $totalPendaftar = \App\Models\CalonSiswa::where('data_confirmed', true)->count();
+    
+    // Kursi tersedia = total kuota gelombang aktif
+    $kursiTersedia = \App\Models\GelombangPendaftaran::where('status', 'aktif')->sum('kuota');
+    
+    // Jumlah jurusan
+    $jurusanCount = count(\App\Models\CalonSiswa::$hargaJurusan ?? []);
+
+    return view('welcome', compact('pengumuman', 'promo', 'totalPendaftar', 'kursiTersedia', 'jurusanCount'));
 })->name('welcome');
+Route::get('/verify/{kode}', [CalonSiswaController::class, 'verifyCertificate'])->name('verify.certificate');
 
 /* 2. Guest (Belum Login) */
 Route::middleware('guest')->group(function () {
@@ -42,10 +66,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/verify-email', [AuthController::class, 'verify'])->name('verify.post');
     Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('send.otp');
 
-    Route::get('/forgot-password', [AuthController::class, 'showRequestForm'])->name('forgot_password.email_form');
-    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('forgot_password.send_link');
-    Route::get('/password-reset/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/password-reset', [AuthController::class, 'resetPassword'])->name('password.update');
+    // --- Forgot Password OTP Routes ---
+    Route::get('/forgot-password', [AuthController::class, 'showRequestForm'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendForgotPasswordOtp'])->name('password.email');
+
+    Route::get('/reset-password-otp', [AuthController::class, 'showResetPasswordOtpForm'])->name('password.reset.otp');
+    Route::post('/reset-password-otp', [AuthController::class, 'resetPasswordWithOtp'])->name('password.update.otp');
 });
 
 /* 3. Setelah Login */
@@ -88,6 +114,10 @@ Route::prefix('calon_siswa')->name('calon_siswa.')->group(function () {
     Route::post('/{id}/setujui', [AdminCalonSiswa::class, 'setujui'])->name('setujui');
     Route::post('/{id}/tolak', [AdminCalonSiswa::class, 'tolak'])->name('tolak');
 
+    // --- 📜 Delivery Flow Admin ---
+    Route::get('/{id}/preview-bukti', [AdminCalonSiswa::class, 'previewBukti'])->name('preview_bukti');
+    Route::post('/{id}/kirim-bukti', [AdminCalonSiswa::class, 'kirimBukti'])->name('kirim_bukti');
+
 
     Route::delete('/{id}', [AdminCalonSiswa::class, 'destroy'])->name('destroy');
 });
@@ -126,40 +156,50 @@ Route::prefix('dokumen_siswa')->name('dokumen_siswa.')->group(function () {
         Route::get('/{id}', [\App\Http\Controllers\Admin\PembayaranController::class, 'show'])->name('show');
         Route::post('/{id}/validasi', [\App\Http\Controllers\Admin\PembayaranController::class, 'validasi'])->name('validasi');
     });
+
+    /* 📌 Promo */
+    Route::prefix('promo')->name('promo.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\PromoController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\PromoController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\PromoController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\PromoController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\PromoController::class, 'update'])->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\PromoController::class, 'destroy'])->name('destroy');
+        Route::post('/validate-code', [\App\Http\Controllers\Admin\PromoController::class, 'validateCode'])->name('validate-code');
+    });
 });
 
 /* 5. Siswa */
 Route::middleware(['auth', 'siswa'])->prefix('siswa')->name('siswa.')->group(function () {
 
-    Route::get('/dashboard', [SiswaDashboard::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Siswa\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/biodata', [\App\Http\Controllers\Siswa\DashboardController::class, 'biodata'])->name('biodata');
 
     /* 📌 Form Pendaftaran */
     Route::get('/pendaftaran', [CalonSiswaController::class, 'create'])->name('pendaftaran.create');
     Route::post('/pendaftaran', [CalonSiswaController::class, 'store'])->name('pendaftaran.store');
+    Route::get('/pendaftaran/{id}/edit', [CalonSiswaController::class, 'edit'])->name('pendaftaran.edit');
+    Route::put('/pendaftaran/{id}', [CalonSiswaController::class, 'update'])->name('pendaftaran.update');
     Route::get('/pendaftaran/gelombang/{id}', [CalonSiswaController::class, 'getGelombangData'])->name('pendaftaran.gelombang.data');
-    Route::get('/pendaftaran/{id}/detail', [CalonSiswaController::class, 'detailBiodata'])->name('pendaftaran.detail');
+    Route::get('/pendaftaran/{id}/detail', [CalonSiswaController::class, 'detail'])->name('pendaftaran.detail');
+    Route::get('/pendaftaran/{id}/confirmation', [CalonSiswaController::class, 'confirmation'])->name('pendaftaran.confirmation');
+    Route::post('/pendaftaran/{id}/confirm', [CalonSiswaController::class, 'confirm'])->name('pendaftaran.confirm');
+
+    /* 📌 Dokumen Siswa */
+    Route::get('/dokumen', [DokumenController::class, 'index'])->name('dokumen.index');
+    Route::post('/dokumen', [DokumenController::class, 'store'])->name('dokumen.store');
+
+    /* 📌 Pembayaran Siswa */
+    Route::get('/pembayaran', [\App\Http\Controllers\Siswa\PembayaranController::class, 'index'])->name('pembayaran.index');
+    Route::post('/pembayaran', [\App\Http\Controllers\Siswa\PembayaranController::class, 'store'])->name('pembayaran.store');
+    Route::post('/pembayaran/check-promo', [\App\Http\Controllers\Siswa\PembayaranController::class, 'checkPromo'])->name('pembayaran.check-promo');
+    Route::get('/pembayaran/show', [\App\Http\Controllers\Siswa\PembayaranController::class, 'show'])->name('pembayaran.show');
 });
 
-    /* Tambahan untuk dashboard siswa dan biodata siswa */
-    Route::middleware(['auth', 'siswa'])->prefix('siswa')->name('siswa.')->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\Siswa\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/biodata', [\App\Http\Controllers\Siswa\DashboardController::class, 'biodata'])->name('biodata');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/siswa/pendaftaran/{id}/download-bukti', [CalonSiswaController::class, 'downloadBukti'])->name('siswa.pendaftaran.download_bukti');
 });
-
 
 /* 6. Pengumuman Publik */
 Route::get('/pengumuman', [PengumumanController::class, 'publicIndex'])->name('pengumuman.public.index');
 Route::get('/pengumuman/{pengumuman}', [PengumumanController::class, 'publicShow'])->name('pengumuman.public.show');
-
-    /* 7. Dokumen Siswa */
-Route::middleware(['auth', 'siswa'])->prefix('siswa')->name('siswa.')->group(function () {
-    Route::get('/dokumen', [DokumenController::class, 'index'])->name('dokumen.index');
-    Route::post('/dokumen', [DokumenController::class, 'store'])->name('dokumen.store');
-});
-
-    /* 8. Pembayaran Siswa */
-Route::middleware(['auth', 'siswa'])->prefix('siswa')->name('siswa.')->group(function () {
-    Route::get('/pembayaran', [\App\Http\Controllers\Siswa\PembayaranController::class, 'index'])->name('pembayaran.index');
-    Route::post('/pembayaran', [\App\Http\Controllers\Siswa\PembayaranController::class, 'store'])->name('pembayaran.store');
-    Route::get('/pembayaran/show', [\App\Http\Controllers\Siswa\PembayaranController::class, 'show'])->name('pembayaran.show');
-});

@@ -255,96 +255,74 @@ class AuthController extends Controller
     }
 
 
-    // Form untuk request reset
+    // --- Fitur Lupa Password OTP (Baru) ---
+
+    // 1. Tampilkan Form Input Email
     public function showRequestForm()
     {
-        return view('auth.forgot-password.email');
+        return view('auth.forgot-password'); // Fixed view path
     }
 
-    // Kirim email reset
-    public function sendResetLink(Request $request)
+    // 2. Kirim OTP ke Email
+    public function sendForgotPasswordOtp(Request $request)
     {
+        $request->validate(['email' => 'required|email|exists:users,email']);
 
-        $request->validate(['email' => 'required|email']);
+        $otp = rand(100000, 999999);
+        $user = User::where('email', $request->email)->first();
 
-        // cek apakah email ada di db
+        // Simpan OTP di kolom user
+        $user->otp_code = $otp; // Pastikan kolom otp_code tipe string/varchar
+        $user->otp_expires_at = now()->addMinutes(10);
+        $user->save(); // Save tanpa hash untuk simplicity sesuai request user, atau hash jika perlu aman
 
-        $user  = User::whereEmail($request->email)->first();
-        if (!$user) {
-            return back()->withErrors(['email' => 'Email tidak terdaftar dalam sistem kami']);
+        // Kirim Email
+        try {
+            Mail::to($user->email)->send(new \App\Mail\ResetPasswordOtpMail($otp));
+        } catch (\Exception $e) {
+            return back()->withErrors(['email' => 'Gagal mengirim email: ' . $e->getMessage()]);
         }
 
-        $token = Str::random(64);
-
-
-        DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $request->email],
-            ['token' => $token, 'created_at' => now()]
-        );
-
-        $resetLink = route('password.reset',  ['token' => $token]);
-
-        // Kirim email
-        Mail::to($request->email)->send(new ResetPasswordMail(
-            $user->name,   // nama user jika ada
-            $resetLink,
-            now()->addMinutes(5)->format('d M Y H:i:s')
-        ));
-
-        return redirect()->route('login')->with('success', 'Bila email ada, maka email untuk mengubah password akan dikirim ke email yang Anda masukkan');
+        return redirect()->route('password.reset.otp', ['email' => $user->email])
+                         ->with('success', 'Kode OTP telah dikirim ke email Anda.');
     }
 
-    // Form untuk reset password
-    public function showResetForm($token)
+    // 3. Tampilkan Form Input OTP & Password Baru
+    public function showResetPasswordOtpForm(Request $request)
     {
-        $getEmail = DB::table('password_reset_tokens')
-            ->where('token', $token)
-            ->firstOrFail();
-        $user = User::whereEmail($getEmail->email)->firstOrFail();
-
-        return view('auth.forgot-password.reset', compact('token', 'user'));
+        return view('auth.reset-password-otp', ['email' => $request->email]);
     }
 
-    // Update password user
-    public function resetPassword(Request $request)
+    // 4. Proses Reset Password dengan OTP
+    public function resetPasswordWithOtp(Request $request)
     {
-
-
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6|confirmed',
-            'token' => 'required'
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|numeric',
+            'password' => 'required|min:8|confirmed',
         ]);
 
-        $reset = DB::table('password_reset_tokens')
-            ->where('email', $request->email)
-            ->where('token', $request->token)
-            ->first();
+        $user = User::where('email', $request->email)->first();
 
-
-        if (!$reset) {
-            return redirect()->route('forgot_password.email_form')->withErrors(['email' => 'Token tidak valid.']);
+        // Cek apakah OTP cocok
+        // Note: Jika di database disimpan plain text:
+        if ($user->otp_code != $request->otp) {
+             return back()->withErrors(['otp' => 'Kode OTP salah.']);
+        }
+        
+        // Cek Kedaluwarsa
+        if (!$user->otp_expires_at || now()->gt($user->otp_expires_at)) {
+            return back()->withErrors(['otp' => 'Kode OTP sudah kedaluwarsa.']);
         }
 
-        // Cek apakah token expired (lebih dari 5 menit)
-        $createdAt =  abs((int) now()->diffInMinutes($reset->created_at));
+        // Reset Password
+        $user->password = Hash::make($request->password);
+        $user->otp_code = null;
+        $user->otp_expires_at = null;
+        $user->save();
 
-        if ($createdAt > 5) {
-            return redirect()->route('forgot_password.email_form')->withErrors(['email' => 'Token sudah kadaluarsa, silakan request ulang.']);
-        }
-
-        // Update password user
-        User::where('email', $request->email)->update([
-            'password' => Hash::make($request->password)
-        ]);
-
-        // Hapus token biar sekali pakai
-        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-        // Set session with the registered email
-        $request->session()->flash('registered_email', $request->email);
-        return redirect('/login')->with('success', 'Password berhasil direset!, Silahkan Login menggunakan password baru Anda');
+        return redirect()->route('login')->with('success', 'Password berhasil diubah. Silakan login.');
     }
-
 
     public function logout(Request $request)
     {

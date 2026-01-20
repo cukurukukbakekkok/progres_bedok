@@ -494,21 +494,17 @@
                     <strong>Panduan:</strong> Pastikan semua data sesuai dengan dokumen resmi Anda
                 </div>
 
-                <!-- Gelombang Selection (Hidden for now, pre-selected) -->
+                <!-- Gelombang Selection (Auto-filled, tidak bisa diubah) -->
                 <div class="form-group">
-                    <label for="id_gelombang">Pilih Gelombang Pendaftaran *</label>
-                    <select name="id_gelombang" id="id_gelombang" class="form-control" required>
-                        <option value="">-- Pilih Gelombang --</option>
-                        @foreach($gelombang as $g)
-                            <option value="{{ $g->id }}">
-                                {{ $g->nama_gelombang ?? 'Gelombang ' . $g->id }} 
-                                (Kuota: {{ $g->kuota ?? 'N/A' }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('id_gelombang')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
+                    <label>Gelombang Pendaftaran *</label>
+                    <div style="padding: 12px 15px; background: #f0f7ff; border: 2px solid #667eea; border-radius: 8px; color: #333; font-weight: 500;">
+                        <i class="fas fa-graduation-cap" style="color: #667eea;"></i>
+                        {{ $gelombang->nama_gelombang ?? 'Gelombang Pendaftaran' }}
+                        <span style="color: #666; font-size: 12px; margin-left: 10px;">(Kuota: {{ $gelombang->kuota ?? 'N/A' }})</span>
+                    </div>
+                    <!-- Hidden input untuk submit -->
+                    <input type="hidden" id="id_gelombang" name="id_gelombang" value="{{ $gelombang->id }}">
+                    <small style="color: #666; display: block; margin-top: 8px;">Gelombang sudah ditentukan oleh sistem</small>
                 </div>
 
                 <!-- Nama Lengkap & NISN -->
@@ -1184,12 +1180,8 @@
 let currentStep = 1;
 
 // Harga jurusan
-const hargaJurusan = {
-    'RPL': 3500000,
-    'TPM': 4000000,
-    'TITL': 3750000,
-    'TKR': 4200000
-};
+// Harga jurusan dari Controller
+const hargaJurusan = @json($hargaJurusan);
 
 // Format Rupiah
 function formatRupiah(angka) {

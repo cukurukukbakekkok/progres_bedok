@@ -223,8 +223,7 @@
 
 <div class="page-wrapper">
     <div class="container">
-        <!-- Breadcrumb -->
-        <a href="{{ route('welcome') }}" class="breadcrumb-link">← Kembali ke Beranda</a>
+        <!-- Breadcrumb removed -->
 
         <!-- Hero Banner -->
         <div class="hero-banner">
@@ -256,6 +255,12 @@
                 {{ $pengumuman->links('pagination::bootstrap-5') }}
             </div>
             @endif
+
+            <div class="text-center" style="margin-top: 40px;">
+                <a href="{{ route('welcome') }}" class="btn-gradient-primary">
+                    ← Kembali ke Beranda
+                </a>
+            </div>
         @else
             <div class="empty-state">
                 <div class="empty-state-icon">📭</div>

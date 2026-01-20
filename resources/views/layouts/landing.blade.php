@@ -199,9 +199,9 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4">
-                            <img src="{{ asset('assets/images/my/logo-black-tp.png') }}"
-                                alt="Logo Sekolah Harapan Bangsa" class="img-fluid mb-3" style="max-width: 200px;">
-                            <p class="opacity-75">Sekolah Harapan Bangsa berkomitmen untuk mencetak generasi penerus
+                            <img src="{{ asset('assets/images/my/logo-antrek.png') }}"
+                                alt="Logo SMK ANTARTIKA 1 SIDOARJO" class="img-fluid mb-3" style="max-width: 200px;">
+                            <p class="opacity-75">SMK ANTARTIKA 1 SIDOARJO berkomitmen untuk mencetak generasi penerus
                                 yang cerdas, kreatif, dan berakhlak mulia melalui pendidikan berkualitas.</p>
                         </div>
                         <div class="col-md-8">
@@ -248,7 +248,7 @@
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col my-1">
-                            <p class="text-white mb-0">© {{ date('Y') }} Sekolah Harapan Bangsa. Hak Cipta
+                            <p class="text-white mb-0">© {{ date('Y') }} SMK ANTARTIKA 1 SIDOARJO. Hak Cipta
                                 Dilindungi.</p>
                         </div>
                         <div class="col-auto my-1">

@@ -11,7 +11,15 @@ class CalonSiswaController extends Controller
     public function index(Request $request)
     {
         // eager-load kelas to avoid N+1 when views access $siswa->kelas
-        $query = CalonSiswa::with('kelas');
+        // HANYA TAMPILKAN YANG SUDAH KONFIRMASI DATA DAN SUDAH UPLOAD DOKUMEN
+        $query = CalonSiswa::with('kelas')->where('data_confirmed', true)
+            ->whereHas('dokumenPersyaratan', function($q) {
+                $q->whereNotNull('akte_kelahiran')
+                  ->orWhereNotNull('ijazah_smp')
+                  ->orWhereNotNull('skl_smp')
+                  ->orWhereNotNull('kartu_keluarga')
+                  ->orWhereNotNull('ktp_ortu');
+            });
         
         // Search by kode_pendaftaran or nama_lengkap
         if ($request->has('search') && $request->search) {
@@ -71,7 +79,8 @@ class CalonSiswaController extends Controller
         $siswa->status_kelulusan = 'Lolos';
         $siswa->save();
 
-        return back()->with('success', '🏆 Siswa telah dinyatakan LOLOS.');
+        return redirect()->route('admin.calon_siswa.show', $id)
+            ->with('success', '🏆 Siswa telah dinyatakan LOLOS.');
     }
 
 
@@ -99,5 +108,27 @@ class CalonSiswaController extends Controller
 
         return redirect()->route('admin.calon_siswa.index')
             ->with('success', 'Data calon siswa berhasil dihapus.');
+    }
+
+    public function previewBukti($id)
+    {
+        $siswa = CalonSiswa::findOrFail($id);
+
+        if ($siswa->status_kelulusan !== 'Lolos' || strtolower($siswa->status_pembayaran) !== 'lunas') {
+            return back()->with('error', 'Siswa harus Lolos dan Lunas untuk melihat pratinjau bukti penerimaan.');
+        }
+
+        return view('admin.calon_siswa.preview_bukti', compact('siswa'));
+    }
+
+    public function kirimBukti($id)
+    {
+        $siswa = CalonSiswa::findOrFail($id);
+        
+        $siswa->is_bukti_dikirim = true;
+        $siswa->save();
+
+        return redirect()->route('admin.calon_siswa.show', $id)
+            ->with('success', '✅ Bukti Penerimaan telah berhasil dikirim ke ' . $siswa->nama_lengkap);
     }
 }

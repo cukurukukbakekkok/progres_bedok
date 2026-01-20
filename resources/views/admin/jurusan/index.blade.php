@@ -13,7 +13,7 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <strong>{{ $j->nama }}</strong>
-                        <div class="text-muted small">{{ $j->keterangan }} ({{ $j->kelas_count }} kelas)</div>
+                        <div class="text-muted small">{{ $j->keterangan }} ({{ $j->pendaftar_count }} Pendaftar)</div>
                     </div>
                     <a href="{{ route('admin.jurusan.show', $j->id) }}" class="btn btn-sm btn-primary">Manage Kelas</a>
                 </li>

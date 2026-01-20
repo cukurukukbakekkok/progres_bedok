@@ -15,8 +15,14 @@ class DokumenController extends Controller
         $siswa = CalonSiswa::where('user_id', Auth::id())->first();
 
         if (!$siswa) {
-            return redirect()->route('siswa.pendaftaran')
+            return redirect()->route('siswa.pendaftaran.create')
                 ->with('error', 'Silakan isi biodata pendaftaran terlebih dahulu.');
+        }
+
+        // Check apakah data sudah dikunci (hanya blokir jika data_locked = true)
+        if ($siswa->data_locked) {
+            return redirect()->route('siswa.pendaftaran.confirmation', $siswa->id)
+                ->with('info', 'Data pendaftaran sudah dikunci. Anda tidak dapat mengubah dokumen lagi.');
         }
 
         $dokumen = DokumenPersyaratan::where('id_siswa', $siswa->id)->first();
@@ -53,6 +59,12 @@ class DokumenController extends Controller
         if (!$dokumen) {
             $dokumen = DokumenPersyaratan::create(['id_siswa' => $siswa->id]);
         }
+
+        // Jangan izinkan update jika sudah Valid
+        if ($dokumen->status_verifikasi === 'Valid') {
+            return redirect()->back()->with('error', 'Dokumen Anda sudah diverifikasi dan valid, tidak dapat diubah lagi.');
+        }
+
 
         $data = [];
 
@@ -92,15 +104,24 @@ class DokumenController extends Controller
         }
 
         if (empty($data)) {
-            return back()->with('error', 'Silakan pilih file dokumen sebelum menyimpan.');
+            // Check if user already has uploaded documents
+            $hasDocuments = $dokumen->akte_kelahiran || $dokumen->ijazah_smp || $dokumen->skl_smp || $dokumen->kartu_keluarga || $dokumen->ktp_ortu;
+            
+            if ($hasDocuments) {
+                 return redirect()->route('siswa.dashboard')->with('success', 'Dokumen sudah tersimpan.');
+            }
+
+            return back()->with('error', 'Silakan pilih minimal satu file dokumen untuk diupload.');
         }
 
-        // Reset status verifikasi menjadi "Belum" jika ada perubahan dokumen
-        // Tapi jangan hapus keterangan admin agar siswa tahu apa yang perlu diperbaiki
-        $data['status_verifikasi'] = 'Belum';
+        // Reset status verifikasi menjadi "Belum" jika ada perubahan dokumen dan status sebelumnya bukan Valid
+        if ($dokumen->status_verifikasi !== 'Valid') {
+            $data['status_verifikasi'] = 'Belum';
+        }
+        
         $dokumen->update($data);
 
-        return redirect()->back()->with('success', 'Dokumen berhasil diunggah! Menunggu verifikasi admin.');
+        return redirect()->route('siswa.dashboard')->with('success', 'Dokumen berhasil diunggah!');
     }
 }
 

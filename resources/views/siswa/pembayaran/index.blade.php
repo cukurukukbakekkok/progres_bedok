@@ -397,6 +397,11 @@
     <div class="payment-container">
         <!-- Header -->
         <div class="payment-header animate__animated animate__fadeIn">
+            <div class="d-flex justify-content-center mb-3">
+                <a href="{{ route('siswa.dashboard') }}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill fw-600 shadow-sm" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease;">
+                    <i class="ti ti-arrow-left me-1"></i> Kembali ke Dashboard
+                </a>
+            </div>
             <h1>💳 Informasi Pembayaran</h1>
             <p>Kelola pembayaran pendaftaran Anda</p>
         </div>
@@ -541,7 +546,7 @@
 
                     <div class="bank-row">
                         <span class="bank-label">Nominal</span>
-                        <span class="bank-value">Rp {{ number_format($siswa->nominal_pembayaran ?? 0, 0, ',', '.') }}</span>
+                        <span class="bank-value" id="nominal-display-main">Rp {{ number_format($siswa->nominal_pembayaran ?? 0, 0, ',', '.') }}</span>
                     </div>
                 </div>
             </div>
@@ -581,6 +586,27 @@
                                     <span>Virtual Account</span>
                                 </label>
                             </div>
+                        </div>
+
+                        <!-- Promo Code Field -->
+                        <div style="margin-bottom: 20px; padding: 15px; background: #f0f7ff; border-radius: 12px; border-left: 4px solid #667eea;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333;">
+                                🎟️ Kode Promo <span style="color: #999; font-weight: 400;">(Opsional)</span>
+                            </label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="kode_promo" placeholder="Masukkan kode promo dari pengumuman" 
+                                       style="flex: 1; padding: 10px 15px; border: 2px solid #667eea; border-radius: 8px; font-size: 0.95rem;">
+                                <button type="button" id="apply_promo" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                                    Cek Promo
+                                </button>
+                            </div>
+                            <div id="promo_message" style="margin-top: 10px; display: none; padding: 10px; border-radius: 8px; font-weight: 500;"></div>
+                            <div id="promo_info" style="margin-top: 10px; display: none; padding: 10px; background: white; border-radius: 8px; border-left: 3px solid #28a745;">
+                                <div style="color: #666; font-size: 0.9rem;">Diskon: <span id="diskon_amount" style="font-weight: 700; color: #28a745;"></span></div>
+                                <div style="color: #666; font-size: 0.9rem;">Total setelah diskon: <span id="total_after_diskon" style="font-weight: 700; color: #667eea;"></span></div>
+                            </div>
+                            <input type="hidden" id="promo_id" name="promo_id">
+                            <input type="hidden" id="promo_diskon" name="promo_diskon">
                         </div>
 
                         <div style="margin-bottom: 20px;">
@@ -812,6 +838,99 @@
             }
         });
     }
+
+    // Promo Code Validation AJAX
+    const applyPromoBtn = document.getElementById('apply_promo');
+    const kodPromoInput = document.getElementById('kode_promo');
+    const promoMessage = document.getElementById('promo_message');
+    const promoInfo = document.getElementById('promo_info');
+    const diskonAmount = document.getElementById('diskon_amount');
+    const totalAfterDiskon = document.getElementById('total_after_diskon');
+    const promoIdInput = document.getElementById('promo_id');
+    const promoDiskonInput = document.getElementById('promo_diskon');
+    
+    const nominalPembayaran = {{ $siswa->nominal_pembayaran ?? 0 }};
+
+    applyPromoBtn.addEventListener('click', async function() {
+        const kode = kodPromoInput.value.trim();
+        
+        if (!kode) {
+            showPromoMessage('Masukkan kode promo terlebih dahulu', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch('{{ route("siswa.pembayaran.check-promo") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                },
+                body: JSON.stringify({
+                    kode: kode,
+                    id_gelombang: {{ $siswa->id_gelombang ?? 'null' }}
+                })
+            });
+
+            const data = await response.json();
+
+            if (!data.valid) {
+                showPromoMessage(data.message, 'error');
+                promoInfo.style.display = 'none';
+                promoIdInput.value = '';
+                promoDiskonInput.value = '';
+                return;
+            }
+
+            // Calculate diskon
+            let diskonTotal = 0;
+            if (data.diskon_nominal) {
+                diskonTotal = data.diskon_nominal;
+            }
+
+            const totalSetelahDiskon = nominalPembayaran - diskonTotal;
+
+            // Update display
+            showPromoMessage('✓ Kode promo valid!', 'success');
+            const formatter = new Intl.NumberFormat('id-ID');
+            diskonAmount.textContent = 'Rp ' + formatter.format(diskonTotal);
+            totalAfterDiskon.textContent = 'Rp ' + formatter.format(totalSetelahDiskon);
+            
+            // Update Main Nominal Display in Purple Card
+            const nominalDisplayMain = document.getElementById('nominal-display-main');
+            if (nominalDisplayMain) {
+                nominalDisplayMain.textContent = 'Rp ' + formatter.format(totalSetelahDiskon);
+                // Add highlight effect
+                nominalDisplayMain.style.color = '#ffeb3b'; // Yellow for attention
+                setTimeout(() => {
+                    nominalDisplayMain.style.color = ''; // Reset after 1s
+                }, 1000);
+            }
+            
+            promoInfo.style.display = 'block';
+            promoIdInput.value = data.id;
+            promoDiskonInput.value = diskonTotal;
+
+        } catch (error) {
+            console.error('Error:', error);
+            showPromoMessage('Terjadi kesalahan. Silakan coba lagi.', 'error');
+        }
+    });
+
+    function showPromoMessage(message, type) {
+        promoMessage.textContent = message;
+        promoMessage.style.display = 'block';
+        promoMessage.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da';
+        promoMessage.style.color = type === 'success' ? '#155724' : '#721c24';
+        promoMessage.style.borderLeft = type === 'success' ? '3px solid #28a745' : '3px solid #dc3545';
+    }
+
+    // Allow enter key to validate promo
+    kodPromoInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyPromoBtn.click();
+        }
+    });
 </script>
 
 @endsection

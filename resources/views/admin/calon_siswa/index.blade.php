@@ -125,17 +125,18 @@
                     </td>
                     <td>{{ $s->created_at->format('d M Y') }}</td>
                     <td>
-                        <a href="{{ route('admin.calon_siswa.show', $s->id) }}" class="btn btn-info btn-sm">
-                            🔍 Detail
-                        </a>
-
-                        <form action="{{ route('admin.calon_siswa.destroy', $s->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button onclick="return confirm('Yakin ingin menghapus data ini?')" class="btn btn-danger btn-sm">
-                                🗑 Hapus
-                            </button>
-                        </form>
+                        <div class="d-flex flex-column gap-1">
+                            <a href="{{ route('admin.calon_siswa.show', $s->id) }}" class="btn btn-info btn-sm" style="font-size: 12px; padding: 5px 10px;">
+                                🔍 Detail
+                            </a>
+                            <form action="{{ route('admin.calon_siswa.destroy', $s->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button onclick="return confirm('Yakin ingin menghapus data ini?')" class="btn btn-danger btn-sm w-100" style="font-size: 12px; padding: 5px 10px;">
+                                    🗑 Hapus
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @empty

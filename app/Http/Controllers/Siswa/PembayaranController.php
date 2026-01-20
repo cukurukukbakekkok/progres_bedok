@@ -18,8 +18,14 @@ class PembayaranController extends Controller
         $siswa = CalonSiswa::where('user_id', Auth::id())->first();
 
         if (!$siswa) {
-            return redirect()->route('siswa.pendaftaran')
+            return redirect()->route('siswa.pendaftaran.create')
                 ->with('error', 'Silakan isi biodata pendaftaran terlebih dahulu.');
+        }
+
+        // Check apakah siswa sudah confirm data
+        if (!$siswa->data_confirmed) {
+            return redirect()->route('siswa.dashboard')
+                ->with('error', 'Silakan konfirmasi data pendaftaran terlebih dahulu sebelum melakukan pembayaran.');
         }
 
         $pembayaran = Pembayaran::where('id_siswa', $siswa->id)->first();
@@ -35,8 +41,14 @@ class PembayaranController extends Controller
         $siswa = CalonSiswa::where('user_id', Auth::id())->first();
 
         if (!$siswa) {
-            return redirect()->route('siswa.pendaftaran')
+            return redirect()->route('siswa.pendaftaran.create')
                 ->with('error', 'Silakan isi biodata pendaftaran terlebih dahulu.');
+        }
+
+        // Check apakah siswa sudah confirm data
+        if (!$siswa->data_confirmed) {
+            return redirect()->route('siswa.dashboard')
+                ->with('error', 'Silakan konfirmasi data pendaftaran terlebih dahulu sebelum melakukan pembayaran.');
         }
 
         $gelombang = $siswa->gelombang;
@@ -91,7 +103,34 @@ class PembayaranController extends Controller
             $pembayaran->bukti_bayar = $file->storeAs('pembayaran', $filename, 'public');
         }
 
+        // Validasi Promo jika ada (Server-side validation)
+        $idPromo = $request->input('promo_id');
+        $potonganPromo = 0;
+        
+        if ($idPromo) {
+            $promo = \App\Models\Promo::find($idPromo);
+            if ($promo && $promo->is_active) {
+                // Double check validity
+                $isValid = true;
+                if ($promo->tanggal_mulai && now()->isBefore($promo->tanggal_mulai)) $isValid = false;
+                if ($promo->tanggal_selesai && now()->isAfter($promo->tanggal_selesai)) $isValid = false;
+                if ($promo->max_usage > 0 && $promo->used_count >= $promo->max_usage) $isValid = false;
+                
+                if ($isValid) {
+                   $potonganPromo = $promo->diskon_nominal;
+                   $pembayaran->id_promo = $promo->id;
+                   
+                   // Increment usage count
+                   $promo->increment('used_count');
+                }
+            }
+        }
+
         $pembayaran->metode_bayar = $request->metode_bayar;
+        $totalBayar = max(($pembayaran->harga_awal ?? $siswa->nominal_pembayaran) - $potonganPromo, 0); // Pastikan tidak negatif
+        
+        $pembayaran->nominal = $totalBayar;
+        $pembayaran->potongan = $potonganPromo;
         $pembayaran->status = 'menunggu'; // Reset status ke menunggu ketika upload baru
         $pembayaran->tanggal_pembayaran = now(); // Set tanggal pembayaran otomatis
         $pembayaran->verified_at = null;
@@ -119,5 +158,46 @@ class PembayaranController extends Controller
         }
 
         return view('siswa.pembayaran.show', compact('siswa', 'pembayaran'));
+    }
+
+    // Check promo code (Ajax for Siswa)
+    public function checkPromo(Request $request)
+    {
+        $kode = strtoupper($request->kode);
+        $id_gelombang = $request->id_gelombang;
+
+        $promo = \App\Models\Promo::where('kode_promo', $kode)
+            ->where('is_active', true)
+            ->where(function ($query) use ($id_gelombang) {
+                // Promo bisa spesifik gelombang atau untuk semua (null)
+                $query->where('id_gelombang', $id_gelombang)
+                      ->orWhereNull('id_gelombang');
+            })
+            ->first();
+
+        if (!$promo) {
+            return response()->json(['valid' => false, 'message' => 'Kode promo tidak valid']);
+        }
+
+        // Check tanggal
+        if ($promo->tanggal_mulai && now()->isBefore($promo->tanggal_mulai)) {
+            return response()->json(['valid' => false, 'message' => 'Promo belum berlaku']);
+        }
+
+        if ($promo->tanggal_selesai && now()->isAfter($promo->tanggal_selesai)) {
+            return response()->json(['valid' => false, 'message' => 'Promo sudah berakhir']);
+        }
+
+        // Check usage limit
+        if ($promo->max_usage > 0 && $promo->used_count >= $promo->max_usage) {
+            return response()->json(['valid' => false, 'message' => 'Kuota promo sudah habis']);
+        }
+
+        return response()->json([
+            'valid' => true,
+            'diskon_persen' => $promo->diskon_persen,
+            'diskon_nominal' => $promo->diskon_nominal,
+            'id' => $promo->id,
+        ]);
     }
 }

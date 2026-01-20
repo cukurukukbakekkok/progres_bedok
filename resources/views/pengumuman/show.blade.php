@@ -33,7 +33,7 @@
     .hero-section {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 50px 0;
+        padding: 50px 40px; /* Added horizontal padding */
         border-radius: 20px;
         margin-bottom: 40px;
         box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
@@ -253,10 +253,7 @@
 
 <div class="page-wrapper">
     <div class="container">
-        <!-- Breadcrumb -->
-        <a href="{{ route('pengumuman.public.index') }}" class="breadcrumb-link">
-            ← Kembali ke Semua Pengumuman
-        </a>
+        <!-- Breadcrumb removed -->
 
         <!-- Hero Section -->
         <div class="hero-section">
@@ -283,6 +280,9 @@
 
             <!-- Action Buttons -->
             <div class="button-group">
+                <a href="{{ route('pengumuman.public.index') }}" class="btn-gradient-secondary">
+                    ← Kembali ke Semua Pengumuman
+                </a>
                 <a href="{{ route('welcome') }}" class="btn-gradient-primary">
                     Kembali ke Beranda →
                 </a>

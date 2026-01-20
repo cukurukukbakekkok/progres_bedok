@@ -20,12 +20,19 @@ class Jurusan extends Model
     }
 
     /**
+     * Get all pendaftar based on major name string
+     */
+    public function pendaftar()
+    {
+        return $this->hasMany(CalonSiswa::class, 'jurusan', 'nama');
+    }
+
+    /**
      * Get total siswa untuk jurusan ini
      */
     public function getTotalSiswa(): int
     {
-        // Sum jumlah_siswa dari semua kelas untuk mendapatkan total siswa yang ter-assign
-        return (int) $this->kelas()->sum('jumlah_siswa');
+        return (int) $this->pendaftar()->count();
     }
 
     /**

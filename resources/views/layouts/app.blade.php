@@ -53,16 +53,24 @@
 
         .navbar-user {
             color: rgba(255, 255, 255, 0.95);
-            font-weight: 600;
+            font-weight: 500;
             margin-right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .btn-logout {
-            background: transparent !important;
+            background: rgba(255, 255, 255, 0.1) !important;
             color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 6px;
             transition: all 0.3s ease;
+            padding: 5px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
         }
 
         .btn-logout:hover {
@@ -79,20 +87,37 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-        <a class="navbar-brand" href="/">
-            <img src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo">
-            <span>PPDB Online</span>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid px-3 px-lg-4">
+        <!-- Left: Logo & Text -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo" style="height: 40px;">
+            <span class="ms-2 d-none d-sm-inline">PPDB Online</span>
         </a>
-        <div class="d-flex align-items-center ms-auto">
-            <span class="navbar-user">Halo, {{ Auth::user()->name }}</span>
-            <form action="{{ route('logout') }}" method="POST" class="m-0">
+
+        <!-- Center: Main Title -->
+        <div class="navbar-nav mx-auto d-none d-md-block">
+            <h5 class="mb-0 text-white fw-bold text-uppercase" style="letter-spacing: 1px;">PPDB SMK ANTARTIKA 1 SDA</h5>
+        </div>
+
+        <!-- Right: User & Logout -->
+        <div class="d-flex align-items-center gap-3">
+            @if(Auth::check())
+            <div class="navbar-user">
+                <span>👋</span>
+                <span class="d-none d-md-inline">Halo, {{ Auth::user()->name }}</span>
+            </div>
+            <a href="{{ route('logout') }}" class="btn btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="ti ti-logout"></i> <span>Logout</span>
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                 @csrf
-                <button type="submit" class="btn btn-logout btn-sm fw-600">
-                    <i class="ti ti-logout"></i> Logout
-                </button>
             </form>
+            @else
+            <a href="/login" class="btn btn-logout">
+                <i class="ti ti-login"></i> <span>Login</span>
+            </a>
+            @endif
         </div>
     </div>
 </nav>

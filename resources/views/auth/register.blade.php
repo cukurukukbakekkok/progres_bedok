@@ -141,7 +141,7 @@
 
         <!-- Footer Text -->
         <p style="text-align: center; color: rgba(255, 255, 255, 0.7); margin-top: 30px; font-size: 12px;">
-            © 2026 PPDB Online - Sekolah Harapan Bangsa. All rights reserved.
+            © 2026 PPDB Online - SMK ANTARTIKA 1 SIDOARJO. All rights reserved.
         </p>
     </div>
 @endsection

@@ -8,25 +8,47 @@ use App\Models\CalonSiswa;
 use App\Models\GelombangPendaftaran;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CalonSiswaController extends Controller
 {
     public function create()
     {
-        // Jika user sudah punya biodata, redirect ke biodata view (read-only)
+        // Cek apakah user sudah punya data pendaftaran
         $existing = CalonSiswa::where('user_id', Auth::id())->first();
-        if ($existing && $existing->tahap_form >= 3) {
-            return redirect()->route('siswa.pendaftaran.detail', $existing->id)
-                ->with('info', 'Pendaftaran Anda sudah selesai. Data tidak dapat diubah lagi.');
+        if ($existing) {
+            // Data terkunci hanya jika: pembayaran LUNAS DAN sudah disetujui admin (LOLOS)
+            $isLocked = ($existing->status_pembayaran === 'Lunas' && $existing->status_kelulusan === 'Lolos');
+            
+            if ($existing->data_locked || $isLocked) {
+                return redirect()->route('siswa.pendaftaran.confirmation', $existing->id)
+                    ->with('info', 'Data Anda sudah terkunci karena pembayaran sudah lunas dan disetujui admin.');
+            }
+            
+            // Jika sudah mengisi formulir sepenuhnya (tahap_form >= 3), arahkan ke halaman konfirmasi detail
+            if ($existing->tahap_form >= 3) {
+                return redirect()->route('siswa.pendaftaran.confirmation', $existing->id);
+            }
+            
+            // Jika belum selesai, lanjut edit
+            return redirect()->route('siswa.pendaftaran.edit', $existing->id);
         }
 
-        // Ambil gelombang yang aktif
-        $gelombang = \App\Models\GelombangPendaftaran::where('status', 'aktif')->get();
+        // Ambil gelombang aktif - HANYA SATU
+        $gelombang = \App\Models\GelombangPendaftaran::where('status', 'aktif')->first();
+        
+        if (!$gelombang) {
+            return redirect()->route('siswa.dashboard')
+                ->with('error', 'Maaf, belum ada gelombang pendaftaran yang dibuka. Silakan hubungi admin.');
+        }
 
         // Generate preview kode formulir (akan digunakan sebagai referensi)
         $kodePendaftaranPreview = CalonSiswa::generateKodePendaftaran();
 
-        return view('siswa.pendaftaran.create-multistep', compact('gelombang', 'kodePendaftaranPreview'));
+        // Ambil data harga jurusan dari Model
+        $hargaJurusan = CalonSiswa::$hargaJurusan;
+
+        return view('siswa.pendaftaran.create-multistep', compact('gelombang', 'kodePendaftaranPreview', 'hargaJurusan'));
     }
 
     public function index()
@@ -233,15 +255,22 @@ class CalonSiswaController extends Controller
                     }
                 }
 
-                // Decrement kuota
-                if ($calon->gelombang && $calon->gelombang->kuota > 0) {
+                // Decrement kuota hanya jika baru pertama kali (tahap_form sebelumnya < 3)
+                if ($calon->gelombang && $calon->gelombang->kuota > 0 && $calon->getOriginal('tahap_form') < 3) {
                     $calon->gelombang->decrement('kuota');
-                    \Log::info('Kuota decremented');
+                    \Log::info('Kuota decremented for first time completion');
                 }
 
-                \Log::info('Pendaftaran completed! Redirecting to detail...');
-                return redirect()->route('siswa.pendaftaran.detail', $calon->id)
-                    ->with('success', 'Selamat! Pendaftaran Anda berhasil disimpan.');
+                // Reset data_confirmed jika sedang mengedit (agar wajib konfirmasi ulang di halaman summary)
+                if ($calon->data_confirmed) {
+                    $calon->data_confirmed = false;
+                    $calon->save();
+                    \Log::info('Data confirmed reset to false for re-confirmation');
+                }
+
+                \Log::info('Pendaftaran completed! Redirecting to dashboard...');
+                return redirect()->route('siswa.dashboard')
+                    ->with('success', 'Data pendaftaran berhasil disimpan. Jangan lupa untuk melengkapi berkas dokumen persyaratan melalui menu "Dokumen" di dashboard.');
             }
 
             // If tahap < 3
@@ -256,6 +285,73 @@ class CalonSiswaController extends Controller
             \Log::error('Error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Show confirmation page
+     */
+    public function confirmation($id)
+    {
+        $calon = CalonSiswa::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $dokumen = \App\Models\DokumenPersyaratan::where('id_siswa', $id)->first();
+
+        return view('siswa.pendaftaran.confirmation', compact('calon', 'dokumen'));
+    }
+
+    /**
+     * Confirm data and lock editing
+     */
+    public function confirm($id)
+    {
+        $calon = CalonSiswa::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        // Mark as confirmed - data akan muncul di admin list
+        $calon->update([
+            'data_confirmed' => true,
+            'confirmed_at' => now(),
+        ]);
+
+        \Log::info('Data dikonfirmasi oleh siswa ID: ' . $calon->id);
+
+        return redirect()->route('siswa.dashboard')
+            ->with('success', 'Data Anda telah dikonfirmasi. Upload dokumen dan bukti pembayaran melalui dashboard.');
+    }
+
+    /**
+     * Edit form (before payment lock)
+     */
+    public function edit($id)
+    {
+        $calon = CalonSiswa::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        // Hanya blokir jika data sudah dikunci (setelah bayar/persetujuan final)
+        if ($calon->data_locked) {
+            return redirect()->route('siswa.pendaftaran.confirmation', $id)
+                ->with('error', 'Data Anda telah dikunci. Hubungi admin jika perlu perubahan.');
+        }
+
+        // Ambil gelombang yang sekarang aktif (hanya 1)
+        $gelombang = \App\Models\GelombangPendaftaran::where('status', 'aktif')->first();
+        
+        if (!$gelombang) {
+            return redirect()->route('siswa.dashboard')
+                ->with('error', 'Gelombang pendaftaran tidak tersedia. Silakan hubungi admin.');
+        }
+
+        $data = $calon; // Pass calon as $data for view compatibility
+        $tahap_form = $calon->tahap_form; // Pass current tahap
+
+        // Ambil data harga jurusan dari Model
+        $hargaJurusan = CalonSiswa::$hargaJurusan;
+
+        return view('siswa.pendaftaran.create-multistep', compact('data', 'gelombang', 'calon', 'tahap_form', 'hargaJurusan'));
     }
 
     private function validateTahap1(Request $request)
@@ -387,5 +483,56 @@ class CalonSiswaController extends Controller
 
         return view('siswa.pendaftaran.detail-biodata', compact('calon'));
     }
+
+    /**
+     * API endpoint untuk mendapatkan potongan harga dari gelombang
+     */
+    public function getGelombangPotongan($id)
+    {
+        $gelombang = GelombangPendaftaran::find($id);
+        
+        if (!$gelombang) {
+            return response()->json(['error' => 'Gelombang tidak ditemukan'], 404);
+        }
+
+        return response()->json([
+            'id' => $gelombang->id,
+            'potongan' => $gelombang->potongan ?? 0,
+            'nama' => $gelombang->nama_gelombang ?? ''
+        ]);
+    }
+
+    public function downloadBukti($id)
+    {
+        $calon = CalonSiswa::findOrFail($id);
+
+        // Security check: must be owner or admin
+        if ($calon->user_id !== Auth::id() && Auth::user()->role !== 'Admin') {
+            abort(403, 'Anda tidak memiliki akses ke dokumen ini.');
+        }
+
+        // Check if Lunas, Lolos, and Sent by Admin
+        if (strtolower($calon->status_pembayaran) !== 'lunas' || $calon->status_kelulusan !== 'Lolos' || !$calon->is_bukti_dikirim) {
+            return back()->with('error', 'Bukti penerimaan belum tersedia atau belum dikirim oleh Panitia.');
+        }
+
+        $pdf = Pdf::loadView('siswa.sertifikat.bukti_penerimaan', compact('calon'));
+        
+        // Use kode_pendaftaran as filename
+        $filename = 'Bukti_Penerimaan_' . str_replace('/', '_', $calon->kode_pendaftaran) . '.pdf';
+
+        return $pdf->download($filename);
+    }
+
+    public function verifyCertificate($kode)
+    {
+        $calon = CalonSiswa::where('kode_pendaftaran', $kode)
+            ->where('status_kelulusan', 'Lolos')
+            ->where('status_pembayaran', 'Lunas')
+            ->first();
+
+        return view('pendaftaran.verify', compact('calon'));
+    }
 }
+
 

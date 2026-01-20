@@ -338,6 +338,11 @@
     <div class="upload-container">
         <!-- Header -->
         <div class="upload-header animate__animated animate__fadeIn">
+            <div class="d-flex justify-content-center mb-3">
+                <a href="{{ route('siswa.dashboard') }}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill fw-600 shadow-sm" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease;">
+                    <i class="ti ti-arrow-left me-1"></i> Kembali ke Dashboard
+                </a>
+            </div>
             <h1>📄 Upload Dokumen Persyaratan</h1>
             <p>Lengkapi dokumen yang diperlukan untuk proses seleksi</p>
         </div>
@@ -442,9 +447,11 @@
                                     <a href="{{ asset('storage/' . $dokumen->akte_kelahiran) }}" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
+                                    @if($dokumen->status_verifikasi !== 'Valid')
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('akte_kelahiran_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
                                         🔄 Ganti
                                     </button>
+                                    @endif
                                 </div>
                             </div>
                         @else
@@ -481,9 +488,11 @@
                                     <a href="{{ asset('storage/' . $dokumen->ijazah_smp) }}" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
+                                    @if($dokumen->status_verifikasi !== 'Valid')
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('ijazah_smp_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
                                         🔄 Ganti
                                     </button>
+                                    @endif
                                 </div>
                             </div>
                         @else
@@ -520,9 +529,11 @@
                                     <a href="{{ asset('storage/' . $dokumen->skl_smp) }}" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
+                                    @if($dokumen->status_verifikasi !== 'Valid')
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('skl_smp_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
                                         🔄 Ganti
                                     </button>
+                                    @endif
                                 </div>
                             </div>
                         @else
@@ -559,9 +570,11 @@
                                     <a href="{{ asset('storage/' . $dokumen->kartu_keluarga) }}" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
+                                    @if($dokumen->status_verifikasi !== 'Valid')
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('kartu_keluarga_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
                                         🔄 Ganti
                                     </button>
+                                    @endif
                                 </div>
                             </div>
                         @else
@@ -598,9 +611,11 @@
                                     <a href="{{ asset('storage/' . $dokumen->ktp_ortu) }}" target="_blank" class="view-btn">
                                         👁️ Lihat
                                     </a>
+                                    @if($dokumen->status_verifikasi !== 'Valid')
                                     <button type="button" class="view-btn" style="background: #ff6b6b; cursor: pointer;" onclick="document.getElementById('ktp_ortu_upload').style.display='block'; this.parentElement.parentElement.style.display='none';">
                                         🔄 Ganti
                                     </button>
+                                    @endif
                                 </div>
                             </div>
                         @else
@@ -613,9 +628,11 @@
                     </div>
 
                     <!-- Submit Button -->
+                    @if($dokumen->status_verifikasi !== 'Valid')
                     <button type="submit" class="submit-btn">
                         💾 Simpan & Upload Dokumen
                     </button>
+                    @endif
                 </form>
             </div>
 
@@ -687,15 +704,7 @@
         }
     });
 
-    // Auto-reload halaman setelah form dokumen submit (untuk update status)
-    const dokumenForm = document.getElementById('dokumen-form');
-    if (dokumenForm) {
-        dokumenForm.addEventListener('submit', function() {
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
-        });
-    }
+    // Script auto-reload removed to prevent interference with controller redirects
 </script>
 
 @endsection

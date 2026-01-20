@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard PPDB</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+@extends('layouts.main')
+
+@section('title', 'Dashboard PPDB')
+
+@section('styles')
     <style>
         body { 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -24,7 +22,7 @@
             z-index: 1;
         }
         
-        .navbar { 
+        .admin-navbar-v2 { 
             border-bottom: 4px solid rgba(255,255,255,.25); 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
         }
@@ -65,23 +63,9 @@
             transform: translateX(6px);
         }
     </style>
-</head>
-<body>
+@endsection
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/">PPDB SMK ANTARTIKA 1 SDA</a>
-            <div class="d-flex align-items-center gap-3">
-                <span class="text-white nav-user fw-bold">👋 Halo, {{ Auth::user()->name }}</span>
-                <form action="{{ route('logout') }}" method="POST" class="m-0">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-light px-3 fw-semibold logout-btn">Logout</button>
-                </form>
-            </div>
-        </div>
-    </nav>
-
+@section('content')
     <!-- Content -->
     <div class="dashboard-wrapper">
     <div class="dashboard-container">
@@ -130,27 +114,128 @@
             <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-modern btn-pengumuman">
                 📢 Kelola Pengumuman
             </a>
+            <a href="{{ route('admin.promo.index') }}" class="btn btn-modern" style="background: linear-gradient(135deg, #e91e63, #f06292); color: #fff;">
+                🏷️ Kelola Promo
+            </a>
         </div>
 
-        <!-- Pengumuman Terbaru -->
-        @if(isset($pengumuman) && count($pengumuman) > 0)
-        <div class="mt-4">
-            <h3 class="mb-3 fw-bold text-secondary">📌 Pengumuman Terbaru</h3>
-            <div class="list-group shadow-sm">
-                @foreach($pengumuman as $p)
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <h5 class="fw-bold">{{ $p->judul }}</h5>
-                        <small class="text-muted">{{ \Carbon\Carbon::parse($p->tanggal_post)->format('d M Y') }}</small>
-                        <p class="mt-2 mb-0">{{ \Illuminate\Support\Str::limit($p->isi, 120, '...') }}</p>
-                    </a>
-                @endforeach
+        <!-- Charts Section -->
+        <div class="row g-4 chart-section animate__animated animate__fadeInUp">
+            <!-- Jurusan Chart -->
+            <div class="col-lg-8">
+                <div class="card p-4 h-100 border-0 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold text-dark mb-0">📊 Statistik Pendaftar per Jurusan</h4>
+                    </div>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="jurusanChart"></canvas>
+                    </div>
+                </div>
             </div>
+
+            <!-- Status Chart -->
+            <div class="col-lg-4">
+                <div class="card p-4 h-100 border-0 shadow-sm">
+                    <h4 class="fw-bold text-dark mb-4">🍩 Pembayaran</h4>
+                    <div style="position: relative; height: 300px; width: 100%; display: flex; justify-content: center;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if(empty($jurusanLabels))
+        <div class="alert alert-info mt-4">
+            <i class="ti ti-info-circle me-2"></i> Belum ada data pendaftar yang dikonfirmasi. Grafik akan muncul setelah ada data masuk.
         </div>
         @endif
 
     </div>
     </div>
+@endsection
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@section('scripts_content')
+    <!-- Chart JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Data for Jurusan Chart
+            const ctxJurusan = document.getElementById('jurusanChart').getContext('2d');
+            new Chart(ctxJurusan, {
+                type: 'bar',
+                data: {
+                    labels: @json($jurusanLabels),
+                    datasets: [{
+                        label: 'Jumlah Pendaftar',
+                        data: @json($jurusanValues),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                            'rgba(255, 159, 64, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+
+            // Data for Status Chart
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            const total = {{ $totalPendaftar ?? 0 }};
+            const lunas = {{ $lunas ?? 0 }};
+            const menunggu = {{ $menunggu ?? 0 }};
+            const belum = total - lunas - menunggu; // Rough estimate or 0 if negative
+
+            new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Lunas', 'Menunggu Verifikasi', 'Belum Bayar'],
+                    datasets: [{
+                        data: [lunas, menunggu, (belum > 0 ? belum : 0)],
+                        backgroundColor: [
+                            '#198754', // Success Green
+                            '#ffc107', // Warning Yellow
+                            '#dc3545'  // Danger Red
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { usePointStyle: true, boxWidth: 10 }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+@endsection

@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/fonts/tabler-icons.min.css') }}">
+    @yield('styles')
     <style>
         * {
             margin: 0;
@@ -56,16 +58,24 @@
 
         .navbar-user {
             color: rgba(255, 255, 255, 0.95);
-            font-weight: 600;
+            font-weight: 500;
             margin-right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .btn-logout {
-            background: transparent !important;
+            background: rgba(255, 255, 255, 0.1) !important;
             color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 6px;
             transition: all 0.3s ease;
+            padding: 5px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
         }
 
         .btn-logout:hover {
@@ -81,16 +91,27 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid px-3 px-lg-5">
-            <a class="navbar-brand" href="/">
-                <img src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo">
-                <span>PPDB Online</span>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid px-3 px-lg-4">
+            <!-- Left: Logo & Text -->
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo" style="height: 40px;">
+                <span class="ms-2 d-none d-sm-inline">PPDB Online</span>
             </a>
-            <div class="d-flex align-items-center ms-auto gap-3">
-                <span class="navbar-user d-none d-md-inline">Halo, {{ Auth::user()->name ?? 'User' }}</span>
-                <a href="{{ route('logout') }}" class="btn btn-logout btn-sm fw-600" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="ti ti-logout"></i> Logout
+
+            <!-- Center: Main Title -->
+            <div class="navbar-nav mx-auto d-none d-md-block">
+                <h5 class="mb-0 text-white fw-bold text-uppercase" style="letter-spacing: 1px;">PPDB SMK ANTARTIKA 1 SDA</h5>
+            </div>
+
+            <!-- Right: User & Logout -->
+            <div class="d-flex align-items-center gap-3">
+                <div class="navbar-user">
+                    <span>👋</span>
+                    <span class="d-none d-md-inline">Halo, {{ Auth::user()->name ?? 'User' }}</span>
+                </div>
+                <a href="{{ route('logout') }}" class="btn btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="ti ti-logout"></i> <span>Logout</span>
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
@@ -110,5 +131,6 @@
     @endif
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts_content')
 </body>
 </html>

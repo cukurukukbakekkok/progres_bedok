@@ -10,12 +10,21 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalPendaftar = CalonSiswa::count();
-        $lunas = CalonSiswa::where('status_pembayaran', 'Lunas')->count();
-        $menunggu = CalonSiswa::where('status_pembayaran', 'Menunggu')->count();
+        $totalPendaftar = CalonSiswa::where('data_confirmed', true)->count();
+        $lunas = CalonSiswa::where('data_confirmed', true)->where('status_pembayaran', 'Lunas')->count();
+        $menunggu = CalonSiswa::where('data_confirmed', true)->where('status_pembayaran', 'Menunggu')->count();
 
-        $pengumuman = Pengumuman::orderBy('tanggal_post', 'desc')->limit(5)->get();
+        // Statistik Jurusan
+        $jurusanStats = CalonSiswa::where('data_confirmed', true)
+            ->selectRaw('jurusan, count(*) as count')
+            ->groupBy('jurusan')
+            ->pluck('count', 'jurusan')
+            ->toArray();
 
-        return view('admin.dashboard', compact('totalPendaftar', 'lunas', 'menunggu', 'pengumuman'));
+        // Ensure keys exist for chart labels even if empty
+        $jurusanLabels = array_keys($jurusanStats);
+        $jurusanValues = array_values($jurusanStats);
+
+        return view('admin.dashboard', compact('totalPendaftar', 'lunas', 'menunggu', 'jurusanLabels', 'jurusanValues'));
     }
 }
