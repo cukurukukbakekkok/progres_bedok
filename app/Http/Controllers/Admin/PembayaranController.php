@@ -53,14 +53,20 @@ class PembayaranController extends Controller
         // Update status_pembayaran di calon_siswas
         $siswa = $pembayaran->siswa;
         if ($siswa) {
-            $siswa->status_pembayaran = ucfirst($request->status_validasi);
-            
-            // LOCK DATA jika pembayaran diverifikasi (LUNAS)
-            if ($request->status_validasi === 'lunas') {
+            // Recalculate total authorized payments
+            $totalDibayar = $siswa->pembayarans()->where('status', 'lunas')->sum('nominal');
+            $totalTagihan = $siswa->nominal_pembayaran;
+            $sisa = $totalTagihan - $totalDibayar;
+
+            if ($sisa <= 0) {
+                $siswa->status_pembayaran = 'Lunas';
                 \Log::info('Locking data for siswa ID: ' . $siswa->id);
                 $siswa->lockData();
                 \Log::info('Data locked - data_locked: ' . $siswa->data_locked . ', data_confirmed: ' . $siswa->data_confirmed);
+            } else {
+                $siswa->status_pembayaran = 'Belum Lunas';
             }
+            $siswa->save();
         }
 
         return redirect()->route('admin.pembayaran.show', $id)

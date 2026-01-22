@@ -14,6 +14,7 @@ use App\Mail\ResetPasswordMail;
 use App\Mail\SendOtpMail;
 
 
+use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
@@ -34,7 +35,21 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',
+            'g-recaptcha-response' => 'required',
         ]);
+
+        // Manually verify reCAPTCHA
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => env('RECAPTCHA_SECRET_KEY'),
+            'response' => $request->input('g-recaptcha-response'),
+            'remoteip' => $request->ip(),
+        ]);
+
+        if (!$response->json('success')) {
+            return back()->withErrors([
+                'g-recaptcha-response' => 'reCAPTCHA verification failed. Please try again.',
+            ])->withInput();
+        }
 
         // buat agar dia memverifikasi email dulu dari kolom is_verified(boolean)
         // tpi kalau yang login  role nya admin, ndk perlu verifikasi
@@ -49,10 +64,10 @@ class AuthController extends Controller
 
         // Attempt to log the user in
         if (Auth::attempt($credentials, $remember)) {
-    $request->session()->regenerate();
+            $request->session()->regenerate();
 
-    return redirect()->route('dashboard');
-    }
+            return redirect()->route('dashboard');
+        }
 
 
         // If authentication fails, redirect back with an error
@@ -73,8 +88,21 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-
+            'g-recaptcha-response' => 'required',
         ]);
+
+        // Manually verify reCAPTCHA
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => env('RECAPTCHA_SECRET_KEY'),
+            'response' => $request->input('g-recaptcha-response'),
+            'remoteip' => $request->ip(),
+        ]);
+
+        if (!$response->json('success')) {
+            return back()->withErrors([
+                'g-recaptcha-response' => 'reCAPTCHA verification failed. Please try again.',
+            ])->withInput();
+        }
 
         // Create the user
         $user = User::create([
@@ -112,8 +140,8 @@ class AuthController extends Controller
         $setResendOtp = 60; // dalam ms / detik
 
 
-        if (session('last_otp_sent') && abs((int)now()->diffInSeconds(session('last_otp_sent'))) <   $setResendOtp) {
-            return back()->withErrors(['otp' => 'Tunggu ' .  $setResendOtp . ' detik sebelum mengirim ulang OTP.']);
+        if (session('last_otp_sent') && abs((int) now()->diffInSeconds(session('last_otp_sent'))) < $setResendOtp) {
+            return back()->withErrors(['otp' => 'Tunggu ' . $setResendOtp . ' detik sebelum mengirim ulang OTP.']);
         }
 
         $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -204,7 +232,7 @@ class AuthController extends Controller
         $cooldown = 0;
         $setResendOtp = 60;
         if (session('last_otp_sent')) {
-            $diff = (int)now()->diffInSeconds(session('last_otp_sent'));
+            $diff = (int) now()->diffInSeconds(session('last_otp_sent'));
             $cooldown = abs($diff);
         }
         // dd((session('last_otp_sent')));
@@ -284,7 +312,7 @@ class AuthController extends Controller
         }
 
         return redirect()->route('password.reset.otp', ['email' => $user->email])
-                         ->with('success', 'Kode OTP telah dikirim ke email Anda.');
+            ->with('success', 'Kode OTP telah dikirim ke email Anda.');
     }
 
     // 3. Tampilkan Form Input OTP & Password Baru
@@ -307,9 +335,9 @@ class AuthController extends Controller
         // Cek apakah OTP cocok
         // Note: Jika di database disimpan plain text:
         if ($user->otp_code != $request->otp) {
-             return back()->withErrors(['otp' => 'Kode OTP salah.']);
+            return back()->withErrors(['otp' => 'Kode OTP salah.']);
         }
-        
+
         // Cek Kedaluwarsa
         if (!$user->otp_expires_at || now()->gt($user->otp_expires_at)) {
             return back()->withErrors(['otp' => 'Kode OTP sudah kedaluwarsa.']);

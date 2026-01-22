@@ -11,7 +11,10 @@ class GelombangPendaftaranController extends Controller
     // List semua gelombang
     public function index()
     {
-        $gelombang = GelombangPendaftaran::orderBy('tanggal_mulai', 'desc')->paginate(10);
+        $gelombang = GelombangPendaftaran::active()
+            ->orderBy('tanggal_mulai', 'desc')
+            ->paginate(10);
+
         return view('admin.gelombang.index', compact('gelombang'));
     }
 
@@ -26,8 +29,8 @@ class GelombangPendaftaranController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|unique:gelombang_pendaftarans',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'required|date|after:tanggal_mulai',
+            'tanggal_mulai' => 'required|date|after_or_equal:today',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'kuota' => 'required|integer|min:1',
             'potongan' => 'nullable|integer|min:0',
             'keterangan_potongan' => 'nullable|string',
@@ -65,8 +68,8 @@ class GelombangPendaftaranController extends Controller
 
         $request->validate([
             'nama' => 'required|string|unique:gelombang_pendaftarans,nama,' . $id,
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'required|date|after:tanggal_mulai',
+            'tanggal_mulai' => 'required|date', // Allow editing past events start date if needed, but end date must be valid
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'kuota' => 'required|integer|min:1',
             'potongan' => 'nullable|integer|min:0',
             'keterangan_potongan' => 'nullable|string',
@@ -95,15 +98,15 @@ class GelombangPendaftaranController extends Controller
     {
         $gelombang = GelombangPendaftaran::findOrFail($id);
         $query = $gelombang->calonSiswa();
-        
+
         // Search by kode_pendaftaran or nama_lengkap
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where('kode_pendaftaran', 'like', '%' . $search . '%')
-                  ->orWhere('nama_lengkap', 'like', '%' . $search . '%')
-                  ->orWhere('nisn', 'like', '%' . $search . '%');
+                ->orWhere('nama_lengkap', 'like', '%' . $search . '%')
+                ->orWhere('nisn', 'like', '%' . $search . '%');
         }
-        
+
         $calonSiswa = $query->paginate(15);
 
         return view('admin.gelombang.siswa', compact('gelombang', 'calonSiswa'));

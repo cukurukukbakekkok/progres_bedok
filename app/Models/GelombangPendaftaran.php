@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class GelombangPendaftaran extends Model
 {
     protected $table = 'gelombang_pendaftarans';
-    
+
     protected $fillable = [
         'nama',
         'tanggal_mulai',
@@ -18,6 +18,22 @@ class GelombangPendaftaran extends Model
         'deskripsi',
         'status',
     ];
+
+    protected $casts = [
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
+    ];
+
+    /**
+     * Scope a query to only include waves that are currently running.
+     * (Today must be between tanggal_mulai and tanggal_selesai)
+     */
+    public function scopeActive($query)
+    {
+        $today = now()->toDateString();
+        return $query->where('tanggal_mulai', '<=', $today)
+            ->where('tanggal_selesai', '>=', $today);
+    }
 
     // Relationships
     public function calonSiswa()

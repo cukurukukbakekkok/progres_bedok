@@ -231,6 +231,12 @@
                             <span class="badge bg-primary">🏆 Lolos</span>
                         @elseif($siswa->status_kelulusan == 'Tidak Lolos')
                             <span class="badge bg-danger">❌ Tidak Lolos</span>
+                            @if($siswa->alasan_penolakan)
+                                <div class="alert alert-danger mt-2 mb-0 small">
+                                    <strong>Alasan Penolakan:</strong><br>
+                                    {{ $siswa->alasan_penolakan }}
+                                </div>
+                            @endif
                         @else
                             <span class="badge bg-secondary">⏳ Menunggu Keputusan</span>
                         @endif
@@ -284,9 +290,8 @@
                     <button class="btn btn-success btn-sm" type="submit">✅ Lolos</button>
                 </form>
 
-                <form action="{{ route('admin.calon_siswa.tolak', $siswa->id) }}" method="POST" style="display:inline;">@csrf
-                    <button class="btn btn-danger btn-sm" type="submit">❌ Tidak Lolos</button>
-                </form>
+                <!-- Tombol Tidak Lolos - membuka modal -->
+                <button class="btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalTolak">❌ Tidak Lolos</button>
 
             </div>
              <a href="{{ route('admin.calon_siswa.index') }}" class="btn btn-secondary mt-3">⬅ Kembali</a>
@@ -296,6 +301,49 @@
 </div>
 </div>
 
+<!-- Modal Alasan Penolakan -->
+<div class="modal fade" id="modalTolak" tabindex="-1" aria-labelledby="modalTolakLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{{ route('admin.calon_siswa.tolak', $siswa->id) }}" method="POST">
+                @csrf
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalTolakLabel">❌ Tolak Kelulusan</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <strong>Perhatian!</strong> Anda akan menyatakan siswa <strong>{{ $siswa->nama_lengkap }}</strong> TIDAK LOLOS.
+                    </div>
+                    <div class="mb-3">
+                        <label for="alasan_penolakan" class="form-label"><strong>Alasan Penolakan</strong> <span class="text-danger">*</span></label>
+                        <textarea name="alasan_penolakan" id="alasan_penolakan" class="form-control" rows="4" 
+                            placeholder="Contoh: Dokumen tidak lengkap, nilai tidak memenuhi kriteria, dll..." 
+                            required minlength="10">{{ old('alasan_penolakan') }}</textarea>
+                        <small class="text-muted">Minimal 10 karakter. Alasan ini akan ditampilkan kepada siswa.</small>
+                        @error('alasan_penolakan')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">❌ Konfirmasi Tidak Lolos</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {{-- Animasi --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+@if($errors->has('alasan_penolakan'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modal = new bootstrap.Modal(document.getElementById('modalTolak'));
+        modal.show();
+    });
+</script>
+@endif
 @endsection

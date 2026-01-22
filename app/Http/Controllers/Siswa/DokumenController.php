@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CalonSiswa;
 use App\Models\DokumenPersyaratan;
@@ -42,12 +42,14 @@ class DokumenController extends Controller
         }
 
         $request->validate([
+            'foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // 2MB max
             'akte_kelahiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'ijazah_smp' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'skl_smp' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'kartu_keluarga' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'ktp_ortu' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ], [
+            'foto.max' => 'Ukuran file pas foto maksimal 2MB',
             'akte_kelahiran.max' => 'Ukuran file akte kelahiran maksimal 2MB',
             'ijazah_smp.max' => 'Ukuran file ijazah SMP maksimal 2MB',
             'skl_smp.max' => 'Ukuran file SKL maksimal 2MB',
@@ -67,6 +69,13 @@ class DokumenController extends Controller
 
 
         $data = [];
+
+        if ($request->hasFile('foto')) {
+            if ($dokumen->foto && file_exists(storage_path('app/public/' . $dokumen->foto))) {
+                unlink(storage_path('app/public/' . $dokumen->foto));
+            }
+            $data['foto'] = $request->file('foto')->store('dokumen', 'public');
+        }
 
         if ($request->hasFile('akte_kelahiran')) {
             if ($dokumen->akte_kelahiran && file_exists(storage_path('app/public/' . $dokumen->akte_kelahiran))) {
@@ -105,10 +114,10 @@ class DokumenController extends Controller
 
         if (empty($data)) {
             // Check if user already has uploaded documents
-            $hasDocuments = $dokumen->akte_kelahiran || $dokumen->ijazah_smp || $dokumen->skl_smp || $dokumen->kartu_keluarga || $dokumen->ktp_ortu;
-            
+            $hasDocuments = $dokumen->foto || $dokumen->akte_kelahiran || $dokumen->ijazah_smp || $dokumen->skl_smp || $dokumen->kartu_keluarga || $dokumen->ktp_ortu;
+
             if ($hasDocuments) {
-                 return redirect()->route('siswa.dashboard')->with('success', 'Dokumen sudah tersimpan.');
+                return redirect()->route('siswa.dashboard')->with('success', 'Dokumen sudah tersimpan.');
             }
 
             return back()->with('error', 'Silakan pilih minimal satu file dokumen untuk diupload.');
@@ -118,7 +127,7 @@ class DokumenController extends Controller
         if ($dokumen->status_verifikasi !== 'Valid') {
             $data['status_verifikasi'] = 'Belum';
         }
-        
+
         $dokumen->update($data);
 
         return redirect()->route('siswa.dashboard')->with('success', 'Dokumen berhasil diunggah!');

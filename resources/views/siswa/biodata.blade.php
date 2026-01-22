@@ -301,6 +301,11 @@
                         Anda dinyatakan <strong>LOLOS</strong> seleksi pendaftaran!
                     @elseif ($siswa->status_kelulusan == 'Tidak Lolos')
                         Anda dinyatakan <strong>TIDAK LOLOS</strong> seleksi pendaftaran.
+                        @if($siswa->alasan_penolakan)
+                            <br><br>
+                            <strong>Alasan:</strong><br>
+                            {{ $siswa->alasan_penolakan }}
+                        @endif
                     @else
                         Status Anda masih <strong>MENUNGGU</strong> keputusan dari admin.
                     @endif

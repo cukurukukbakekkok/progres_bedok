@@ -60,6 +60,7 @@ class CalonSiswa extends Model
         'id_gelombang',
         'status_berkas',
         'status_kelulusan',
+        'alasan_penolakan',
         'status_pembayaran',
         'data_confirmed',
         'data_locked',
@@ -92,12 +93,12 @@ class CalonSiswa extends Model
     {
         $prefix = 'REG-' . date('Ymd') . '-';
         $random = str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
-        
+
         // ensure unique
         while (self::where('kode_pendaftaran', $prefix . $random)->exists()) {
             $random = str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
         }
-        
+
         return $prefix . $random;
     }
 
@@ -116,9 +117,9 @@ class CalonSiswa extends Model
         return $this->belongsTo(\App\Models\Kelas::class, 'kelas_id');
     }
 
-    public function pembayaran()
+    public function pembayarans()
     {
-        return $this->hasOne(Pembayaran::class, 'id_siswa');
+        return $this->hasMany(Pembayaran::class, 'id_siswa');
     }
 
     /**
@@ -131,7 +132,7 @@ class CalonSiswa extends Model
         // Jika data_locked = true, berarti sudah verified dan truly locked
         return !$this->data_locked;
     }
-    
+
     /**
      * Check apakah data dalam status confirmed (tidak bisa edit)
      */

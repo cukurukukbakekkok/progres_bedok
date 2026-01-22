@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('ijazah_smp')->nullable();
             $table->string('skl_smp')->nullable();
             $table->string('kartu_keluarga')->nullable();
-            $table->string('ktp_ortu')->nullable();
+            $table->string('ktp_ortu')->nullable(); // Label dinamis: KTP Ortu / KTP Wali
+            $table->string('foto')->nullable();
             $table->enum('status_verifikasi', ['Belum', 'Valid', 'Tidak Valid'])->default('Belum');
             $table->unsignedBigInteger('id_admin_verifikasi')->nullable();
             $table->timestamp('verified_at')->nullable();

@@ -63,10 +63,18 @@ class CalonSiswaController extends Controller
     }
 
     // ✔ Tolak kelulusan
-    public function tolak($id)
+    public function tolak(Request $request, $id)
     {
+        $request->validate([
+            'alasan_penolakan' => 'required|string|min:10',
+        ], [
+            'alasan_penolakan.required' => 'Alasan penolakan wajib diisi.',
+            'alasan_penolakan.min' => 'Alasan penolakan minimal 10 karakter.',
+        ]);
+
         $siswa = CalonSiswa::findOrFail($id);
         $siswa->status_kelulusan = 'Tidak Lolos';
+        $siswa->alasan_penolakan = $request->alasan_penolakan;
         $siswa->save();
 
         return back()->with('success', '❌ Siswa telah dinyatakan TIDAK LOLOS.');
