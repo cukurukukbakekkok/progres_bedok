@@ -64,7 +64,7 @@ class PembayaranController extends Controller
                 $siswa->lockData();
                 \Log::info('Data locked - data_locked: ' . $siswa->data_locked . ', data_confirmed: ' . $siswa->data_confirmed);
             } else {
-                $siswa->status_pembayaran = 'Belum Lunas';
+                $siswa->status_pembayaran = 'Menunggu';
             }
             $siswa->save();
         }

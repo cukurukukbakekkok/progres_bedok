@@ -10,6 +10,7 @@ class DokumenPersyaratan extends Model
 
     protected $fillable = [
         'id_siswa',
+        'foto',
         'akte_kelahiran',
         'ijazah_smp',
         'skl_smp',

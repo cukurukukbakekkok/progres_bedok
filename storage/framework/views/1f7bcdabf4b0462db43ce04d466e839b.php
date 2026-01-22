@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'PPDB') }} - @yield('title')</title>
+    <title><?php echo e(config('app.name', 'PPDB')); ?> - <?php echo $__env->yieldContent('title'); ?></title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/fonts/tabler-icons.min.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/tabler-icons.min.css')); ?>">
     <style>
         :root {
             --primary-color: #006aff;
@@ -91,7 +91,7 @@
     <div class="container-fluid px-3 px-lg-4">
         <!-- Left: Logo & Text -->
         <a class="navbar-brand d-flex align-items-center" href="/">
-            <img src="{{ asset('assets/images/my/logo-antrek.png') }}" alt="logo" style="height: 40px;">
+            <img src="<?php echo e(asset('assets/images/my/logo-antrek.png')); ?>" alt="logo" style="height: 40px;">
             <span class="ms-2 d-none d-sm-inline">PPDB Online</span>
         </a>
 
@@ -102,44 +102,47 @@
 
         <!-- Right: User & Logout -->
         <div class="d-flex align-items-center gap-3">
-            @if(Auth::check())
+            <?php if(Auth::check()): ?>
             <div class="navbar-user">
                 <span>👋</span>
-                <span class="d-none d-md-inline">Halo, {{ Auth::user()->name }}</span>
+                <span class="d-none d-md-inline">Halo, <?php echo e(Auth::user()->name); ?></span>
             </div>
-            <a href="{{ route('logout') }}" class="btn btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <a href="<?php echo e(route('logout')); ?>" class="btn btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="ti ti-logout"></i> <span>Logout</span>
             </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
+            <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
+                <?php echo csrf_field(); ?>
             </form>
-            @else
+            <?php else: ?>
             <a href="/login" class="btn btn-logout">
                 <i class="ti ti-login"></i> <span>Login</span>
             </a>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 </nav>
 
 <div class="container py-4">
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="ti ti-check me-2"></i> {{ session('success') }}
+            <i class="ti ti-check me-2"></i> <?php echo e(session('success')); ?>
+
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
-    @if(session('error'))
+    <?php if(session('error')): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="ti ti-alert-circle me-2"></i> {{ session('error') }}
+            <i class="ti ti-alert-circle me-2"></i> <?php echo e(session('error')); ?>
+
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
-    @yield('content')
+    <?php echo $__env->yieldContent('content'); ?>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<?php /**PATH C:\ujian_ppdb1\resources\views/layouts/app.blade.php ENDPATH**/ ?>

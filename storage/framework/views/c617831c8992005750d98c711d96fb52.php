@@ -1,6 +1,4 @@
-@extends('layouts.main')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 
     <style>
@@ -267,7 +265,7 @@
             <!-- Header -->
             <div class="payment-header animate__animated animate__fadeIn">
                 <div class="d-flex justify-content-center mb-3">
-                    <a href="{{ route('siswa.dashboard') }}"
+                    <a href="<?php echo e(route('siswa.dashboard')); ?>"
                         class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill fw-600 shadow-sm"
                         style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.2);">
                         <i class="ti ti-arrow-left me-1"></i> Kembali ke Dashboard
@@ -278,41 +276,43 @@
             </div>
 
             <!-- Alerts -->
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div class="alert-box alert-success">
-                    <strong>✅ Sukses!</strong> {{ session('success') }}
-                </div>
-            @endif
+                    <strong>✅ Sukses!</strong> <?php echo e(session('success')); ?>
 
-            @if(session('error'))
+                </div>
+            <?php endif; ?>
+
+            <?php if(session('error')): ?>
                 <div class="alert-box alert-error">
-                    <strong>❌ Error!</strong> {{ session('error') }}
-                </div>
-            @endif
+                    <strong>❌ Error!</strong> <?php echo e(session('error')); ?>
 
-            @if($gelombang)
+                </div>
+            <?php endif; ?>
+
+            <?php if($gelombang): ?>
                 <!-- Summary Cards -->
                 <div class="summary-grid">
                     <div class="summary-card">
                         <div class="card-label">Total Tagihan</div>
-                        <div class="card-value tagihan">Rp {{ number_format($totalTagihan, 0, ',', '.') }}</div>
+                        <div class="card-value tagihan">Rp <?php echo e(number_format($totalTagihan, 0, ',', '.')); ?></div>
                     </div>
                     <div class="summary-card">
                         <div class="card-label">Total Terbayar (Verified)</div>
-                        <div class="card-value dibayar">Rp {{ number_format($totalDibayar, 0, ',', '.') }}</div>
-                        @if($totalMenunggu > 0)
+                        <div class="card-value dibayar">Rp <?php echo e(number_format($totalDibayar, 0, ',', '.')); ?></div>
+                        <?php if($totalMenunggu > 0): ?>
                             <div style="font-size: 0.8rem; color: #ffc107; margin-top: 5px;">
-                                + Rp {{ number_format($totalMenunggu, 0, ',', '.') }} (Menunggu Verifikasi)
+                                + Rp <?php echo e(number_format($totalMenunggu, 0, ',', '.')); ?> (Menunggu Verifikasi)
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                     <div class="summary-card">
                         <div class="card-label">Sisa Tagihan</div>
-                        <div class="card-value sisa">Rp {{ number_format($sisaTagihan, 0, ',', '.') }}</div>
+                        <div class="card-value sisa">Rp <?php echo e(number_format($sisaTagihan, 0, ',', '.')); ?></div>
                     </div>
                 </div>
 
-                @if(!$isLunas)
+                <?php if(!$isLunas): ?>
                     <!-- Payment Form -->
                     <div class="form-card">
                         <div class="section-title">
@@ -325,15 +325,15 @@
                             Transfer ke Rekening <strong>BRI 1234-5678-9000</strong> a.n SMK ANTARTIKA 1.
                         </div>
 
-                        <form action="{{ route('siswa.pembayaran.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
+                        <form action="<?php echo e(route('siswa.pembayaran.store')); ?>" method="POST" enctype="multipart/form-data">
+                            <?php echo csrf_field(); ?>
 
                             <div class="form-group">
                                 <label class="form-label">Nominal Pembayaran (Rp)</label>
                                 <input type="number" name="nominal" class="form-control" placeholder="Contoh: 500000" min="10000"
-                                    max="{{ $sisaTagihan }}" required>
+                                    max="<?php echo e($sisaTagihan); ?>" required>
                                 <small style="color: #666;">Maksimal pembayaran: Rp
-                                    {{ number_format($sisaTagihan, 0, ',', '.') }}</small>
+                                    <?php echo e(number_format($sisaTagihan, 0, ',', '.')); ?></small>
                             </div>
 
                             <div class="form-group">
@@ -357,7 +357,7 @@
 
                             <div class="form-group">
                                 <label class="form-label">Tanggal Pembayaran</label>
-                                <input type="date" name="tanggal_pembayaran" class="form-control" value="{{ date('Y-m-d') }}"
+                                <input type="date" name="tanggal_pembayaran" class="form-control" value="<?php echo e(date('Y-m-d')); ?>"
                                     required>
                             </div>
 
@@ -366,14 +366,14 @@
                             </button>
                         </form>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="status-card"
                         style="text-align: center; background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); padding: 40px; border-radius: 16px; margin-bottom: 30px;">
                         <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
                         <h2 style="color: #155724; font-weight: 800;">LUNAS</h2>
                         <p style="color: #155724;">Pembayaran Anda Telah Lunas. Terima kasih!</p>
                     </div>
-                @endif
+                <?php endif; ?>
 
                 <!-- History Table -->
                 <div class="history-card">
@@ -381,7 +381,7 @@
                         <span>📜</span> Riwayat Pembayaran
                     </div>
 
-                    @if($pembayarans->count() > 0)
+                    <?php if($pembayarans->count() > 0): ?>
                         <div class="table-responsive">
                             <table class="history-table">
                                 <thead>
@@ -394,55 +394,56 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($pembayarans as $p)
+                                    <?php $__currentLoopData = $pembayarans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
-                                            <td>{{ \Carbon\Carbon::parse($p->tanggal_pembayaran)->format('d M Y') }}</td>
-                                            <td>{{ ucfirst($p->metode_bayar) }}</td>
-                                            <td>Rp {{ number_format($p->nominal, 0, ',', '.') }}</td>
+                                            <td><?php echo e(\Carbon\Carbon::parse($p->tanggal_pembayaran)->format('d M Y')); ?></td>
+                                            <td><?php echo e(ucfirst($p->metode_bayar)); ?></td>
+                                            <td>Rp <?php echo e(number_format($p->nominal, 0, ',', '.')); ?></td>
                                             <td>
-                                                @if($p->status == 'lunas')
+                                                <?php if($p->status == 'lunas'): ?>
                                                     <span class="badge badge-lunas">Diterima</span>
-                                                @elseif($p->status == 'menunggu')
+                                                <?php elseif($p->status == 'menunggu'): ?>
                                                     <span class="badge badge-menunggu">Menunggu</span>
-                                                @else
+                                                <?php else: ?>
                                                     <span class="badge badge-gagal">Ditolak</span>
-                                                @endif
+                                                <?php endif; ?>
                                             </td>
                                             <td>
-                                                @if($p->bukti_bayar)
-                                                    <a href="{{ asset('storage/' . $p->bukti_bayar) }}" target="_blank"
+                                                <?php if($p->bukti_bayar): ?>
+                                                    <a href="<?php echo e(asset('storage/' . $p->bukti_bayar)); ?>" target="_blank"
                                                         class="view-btn">Lihat</a>
-                                                @else
+                                                <?php else: ?>
                                                     -
-                                                @endif
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
-                                        @if($p->status == 'gagal' && $p->keterangan)
+                                        <?php if($p->status == 'gagal' && $p->keterangan): ?>
                                             <tr>
                                                 <td colspan="5" style="background: #fff5f5; color: #dc3545; font-size: 0.9rem;">
-                                                    <strong>Alasan Penolakan:</strong> {{ $p->keterangan }}
+                                                    <strong>Alasan Penolakan:</strong> <?php echo e($p->keterangan); ?>
+
                                                 </td>
                                             </tr>
-                                        @endif
-                                    @endforeach
+                                        <?php endif; ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
                         </div>
-                    @else
+                    <?php else: ?>
                         <div class="empty-state" style="text-align: center; color: #999; padding: 20px;">
                             Belum ada riwayat pembayaran.
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
-            @else
+            <?php else: ?>
                 <!-- No Active Wave -->
                 <div class="status-card" style="background: white; padding: 30px; border-radius: 16px; text-align: center;">
                     <div style="font-size: 3rem; margin-bottom: 15px;">🚫</div>
                     <h3>Gelombang Pendaftaran Tidak Aktif</h3>
                     <p>Silakan tunggu pembukaan gelombang pendaftaran berikutnya.</p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
     <script>
@@ -523,7 +524,7 @@
     const promoIdInput = document.getElementById('promo_id');
     const promoDiskonInput = document.getElementById('promo_diskon');
 
-    const nominalPembayaran = {{ $siswa->nominal_pembayaran ?? 0 }};
+    const nominalPembayaran = <?php echo e($siswa->nominal_pembayaran ?? 0); ?>;
 
     applyPromoBtn.addEventListener('click', async function() {
     const kode = kodPromoInput.value.trim();
@@ -534,7 +535,7 @@
     }
 
     try {
-    const response = await fetch('{{ route("siswa.pembayaran.check-promo") }}', {
+    const response = await fetch('<?php echo e(route("siswa.pembayaran.check-promo")); ?>', {
     method: 'POST',
     headers: {
     'Content-Type': 'application/json',
@@ -542,7 +543,8 @@
     },
     body: JSON.stringify({
     kode: kode,
-    id_gelombang: {{ $siswa->id_gelombang ?? 'null' }}
+    id_gelombang: <?php echo e($siswa->id_gelombang ?? 'null'); ?>
+
     })
     });
 
@@ -607,4 +609,5 @@
     });
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.main', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ujian_ppdb1\resources\views/siswa/pembayaran/index.blade.php ENDPATH**/ ?>
